@@ -239,7 +239,52 @@ namespace Labote.Core
             }
             #endregion
 
-         
+            #region Yönetimsel Araçlar
+
+            var Firmalar = new MenuModule
+            {
+                IconName = "fas fa-cogs",
+                PageName = "Firmalarım",
+                OrderNumber = 1,
+                IsMainPage = true,
+                PageUrl = "firmalarim"
+            };
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    var Ky = MenuList.FirstOrDefault(x => x.PageName == Firmalar.PageName);
+                    if (Ky == null)
+                    {
+                        context.Add(Firmalar);
+                        context.SaveChanges();
+                    }
+                    else { Firmalar = Ky; }
+                    transaction.Commit();
+                }
+            }
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Firma Listesi"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Firma Listesi",
+                            PageUrl = "firma-listesi",
+                            ParentId = Firmalar.Id,
+                            OrderNumber = 1,
+                        });
+                    }
+                  
+                   
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+            #endregion
 
 
             using (LaboteContext context = new LaboteContext())
