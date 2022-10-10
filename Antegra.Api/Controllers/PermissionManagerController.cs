@@ -34,8 +34,13 @@ namespace Labote.Api.Controllers
         [HttpGet("GetRoleWithMenuModuleByRoleId/{id}")]
         public async Task<ActionResult<dynamic>> GetRoleWithMenuModule(Guid id)
         {
+            var userRoles = (from rl in _context.Roles
+                            from userrl in _context.UserRoles
+                            where rl.Id == userrl.RoleId && userrl.UserId == CurrentUser.Id && rl.Name == "SuperAdmin"
+                            select rl).Any();
+
             var Role = _context.Roles.Include(x => x.UserMenuModules).Where(x => x.Id == id).FirstOrDefault();
-            var MenuModules = _context.MenuModules.OrderBy(x => x.OrderNumber).ToList();
+            var MenuModules = _context.MenuModules.Where(x=>x.IsSuperAdmin == userRoles || x.IsSuperAdmin==false).OrderBy(x => x.OrderNumber).ToList();
             PageResponse.Data = new
             {
                 Role = new
@@ -71,7 +76,7 @@ namespace Labote.Api.Controllers
             {
                 var userRolemenu = _context.UserMenuModules.Include(x => x.UserRole).Where(x => x.MenuModelId == model.MenuId && x.UserRole.Id == model.RoleId).FirstOrDefault();
                 var menu = _context.MenuModules.Where(x => x.Id == model.MenuId || x.ParentId == model.MenuId).ToList();
-                if (userRolemenu?.UserRole?.Name == "Admin")
+                if (userRolemenu?.UserRole?.NotDelete == true)
                 {
                     PageResponse.IsError = true;
                     PageResponse.Message = "Bu Kayıt Birincil Kayıttır Değiştirilemez.";
@@ -178,7 +183,7 @@ namespace Labote.Api.Controllers
             {
                 var userRolemenu = _context.UserMenuModules.Include(x => x.UserRole).Where(x => x.MenuModelId == model.MenuId && x.UserRoleId == model.RoleId).FirstOrDefault();
 
-                if (userRolemenu?.UserRole?.Name == "Admin")
+                if (userRolemenu?.UserRole?.NotDelete == true)
                 {
                     PageResponse.IsError = true;
                     PageResponse.Message = "Bu Kayıt Birincil Kayıttır Değiştirilemez.";

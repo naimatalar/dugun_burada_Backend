@@ -28,6 +28,7 @@ namespace Labote.Core
 
 
         }
+        public DbSet<UserTopic> UserTopics { get; set; }
 
         public DbSet<MenuModule> MenuModules { get; set; }
         public DbSet<UserMenuModule> UserMenuModules { get; set; }

@@ -20,6 +20,9 @@ namespace Labote.Core.Entities
         public bool IsDelete { get; set; }
         public bool NotDelete { get; set; }
         public string PhoneConfirmCode { get; set; }
+        public UserTopic UserTopic { get; set; }
+        public Guid UserTopicId { get; set; }
+
 
     }
 

@@ -24,17 +24,19 @@ namespace Labote.Api.Controllers
         private readonly UserManager<LaboteUser> _userManager;
         private readonly RoleManager<UserRole> _roleManager;
         private const string pageName = "kullanici-islemleri";
+       
         public UserManagerController(LaboteContext context, UserManager<LaboteUser> userManager, RoleManager<UserRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+           
         }
         [HttpGet("GetAllUsers")]
         public async Task<ActionResult<dynamic>> GetAllUsers()
         {
             var userid = User.Identity.UserId();
-            var result = _context.Users.Where(x => !x.IsDelete).Where(x => x.Id != userid).Select(x => new
+            var result = _context.Users.Where(x => !x.IsDelete&&x.UserTopicId==CurrentUser.UserTopicId).Where(x => x.Id != userid).Select(x => new
             {
                 x.Id,
                 x.FirstName,
@@ -48,7 +50,7 @@ namespace Labote.Api.Controllers
         [HttpGet("GetRoles")]
         public async Task<ActionResult<dynamic>> GetRoles()
         {
-            var result = _context.Roles.Where(x => !x.IsDelete).Select(x => new
+            var result = _context.Roles.Where(x => !x.IsDelete &&x.UserTopicId==CurrentUser.UserTopicId).Select(x => new
             {
                 x.Id,
                 x.Name,
@@ -193,7 +195,7 @@ namespace Labote.Api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> CreateUser(CreateUserRequestModel model)
         {
-
+            
             LaboteUser user = new LaboteUser();
             using (LaboteContext context = new LaboteContext())
             {
@@ -208,7 +210,8 @@ namespace Labote.Api.Controllers
                         FirstName = model.FirstName,
                         Lastname = model.Lastname,
                         PhoneNumber = model.PhoneNumber,
-                        PhoneConfirmCode = MobilCode.GenerateSmsCode()
+                        PhoneConfirmCode = MobilCode.GenerateSmsCode(),
+                        UserTopicId=CurrentUser.UserTopicId,
                     };
 
                     try

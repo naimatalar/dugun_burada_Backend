@@ -33,10 +33,12 @@ namespace Labote.Api.Controllers
         
         public async Task<ActionResult<dynamic>> GetAllUsers()
         {
-
+            var UserId = User.Identity.UserId();
+            var user = _context.Users.FirstOrDefault(x => x.Id == UserId);
             var roles = _context.Roles.Where(x => !x.IsDelete);
             var uRoles = _context.UserRoles;
             var result = (from r in roles
+                          where r.UserTopicId== user.UserTopicId
                           select new
                           {
                               r.Name,
@@ -50,7 +52,10 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<ActionResult<dynamic>> CreateRole(CreateRoleRequestModel model)
         {
-            var ress = _roleManager.CreateAsync(new UserRole { Name = model.Name, NormalizedName = model.Name.ToUpper() }).Result;
+            var UserId = User.Identity.UserId();
+            var user = _context.Users.FirstOrDefault(x => x.Id == UserId);
+           
+            var ress = _roleManager.CreateAsync(new UserRole { Name = model.Name + "-" + CurrentUserTopic, NormalizedName = model.Name+"-"+CurrentUserTopic.ToUpper(),UserTopicId=user.UserTopicId }).Result;
             //_context.Roles.Add(new UserRole { Name = model.Name ,NormalizedName=model.Name.ToUpper()});
             //_context.SaveChanges();
             return Ok(PageResponse);
@@ -78,8 +83,8 @@ namespace Labote.Api.Controllers
                 PageResponse.Message = "Bu Kayıt Birincil Kayıttır Değiştirilemez.";
                 return PageResponse;
             }
-            role.Name = model.Name;
-            role.NormalizedName = model.Name.ToUpper();
+            role.Name = model.Name + "-" + CurrentUserTopic;
+            role.NormalizedName = model.Name + "-" + CurrentUserTopic.ToUpper();
             _context.Update(role);
             _context.SaveChanges();
             return Ok(PageResponse);

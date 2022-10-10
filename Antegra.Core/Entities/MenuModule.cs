@@ -15,6 +15,7 @@ namespace Labote.Core.Entities
         public string IconName { get; set; }
         public int OrderNumber { get; set; }
         public bool IsHidden { get; set; }
+        public bool IsSuperAdmin { get; set; } = false;
         public ICollection<UserMenuModule> UserMenuModules { get; set; }
 
     }

@@ -193,15 +193,27 @@ namespace Labote.Api.Controllers
             {
                 if (ModelState.IsValid)
                 {
-
-
-
+                    var userTopic = new UserTopic
+                    {
+                    };
                     using (LaboteContext context = new LaboteContext())
                     {
-                        using (var transaction = context.Database.BeginTransactionAsync())
+                        using (var transaction = context.Database.BeginTransaction())
+                        {
+
+                            context.UserTopics.Add(userTopic);
+                            context.SaveChanges();
+                            transaction.Commit();
+                        }
+                    }
+
+                    var role = new UserRole();
+                    using (LaboteContext context = new LaboteContext())
+                    {
+                        using (var transaction = context.Database.BeginTransaction())
                         {
                             LaboteUser user = new LaboteUser();
-                            if (_userManager.Users.Count() == 0)
+                            if (!_userManager.Users.Any(x=>x.UserName==model.UserName || x.Email==model.Email))
                             {
                                 user = new LaboteUser()
                                 {
@@ -210,13 +222,34 @@ namespace Labote.Api.Controllers
                                     UserName = model.UserName,
                                     FirstName = model.FirstName,
                                     Lastname = model.LastName,
-                                    NotDelete = true
+                                    NotDelete = false,
+                                    UserTopicId=userTopic.Id,
 
                                 };
                                 var usr = _userManager.CreateAsync(user, model.Password).Result;
+
+                                role = new UserRole
+                                {
+                                    Name = "Admin-" + userTopic.TopicCode,
+                                    NormalizedName = "ADMİN-" + userTopic.TopicCode.ToUpper(),
+                                    IsHidden = false,
+                                    UserTopicId = userTopic.Id,
+                                    NotDelete=true,
+                                };
+                                var userRol = await _roleManager.CreateAsync(role);
+
+                                var RoleAdd = context.UserRoles.Add(new IdentityUserRole<Guid> { RoleId = role.Id, UserId = user.Id });
+                                context.SaveChanges();
+                                transaction.Commit();
+
+                            }
+                            else
+                            {
+                                PageResponse.IsError = true;
+                                PageResponse.Message = "Mail adresi yada kullanıcı adı sistemde zaten mevcut";
+                                return PageResponse;
                             }
 
-                            var RoleAdd = _userManager.AddToRoleAsync(user, Enums.Admin).Result;
 
                         };
                     }
@@ -226,14 +259,13 @@ namespace Labote.Api.Controllers
                     {
                         using (var transaction = context.Database.BeginTransaction())
                         {
-                            var data = context.MenuModules.ToList();
-
+                            var data = context.MenuModules.Where(x=>x.IsSuperAdmin==false).ToList();
 
                             foreach (var item in data)
                             {
                                 context.UserMenuModules.Add(new UserMenuModule
                                 {
-                                    //UserRoleId = role.RoleId,
+                                    UserRoleId = role.Id,
                                     MenuModelId = item.Id
                                 });
                             }

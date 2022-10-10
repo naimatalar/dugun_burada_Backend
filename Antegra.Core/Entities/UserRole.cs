@@ -14,8 +14,8 @@ namespace Labote.Core.Entities
         public bool IsDelete { get; set; } = false;
         public bool NotDelete { get; set; }
         public bool IsHidden { get; set; } = false;
-        public Company Company { get; set; }
-        public Guid? CompanyId { get; set; }
+        public UserTopic UserTopic { get; set; }
+        public Guid? UserTopicId { get; set; }
    
 
     }

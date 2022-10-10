@@ -4,14 +4,16 @@ using Labote.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Labote.Core.Migrations
 {
     [DbContext(typeof(LaboteContext))]
-    partial class LaboteContextModelSnapshot : ModelSnapshot
+    [Migration("20221010154455_mmgsir")]
+    partial class mmgsir
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,9 +191,6 @@ namespace Labote.Core.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<Guid>("UserTopicId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("UserType")
                         .HasColumnType("int");
 
@@ -204,8 +203,6 @@ namespace Labote.Core.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UserTopicId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -232,9 +229,6 @@ namespace Labote.Core.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsMainPage")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSuperAdmin")
                         .HasColumnType("bit");
 
                     b.Property<int>("OrderNumber")
@@ -338,16 +332,24 @@ namespace Labote.Core.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("CreatorUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("LaboteUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TopicCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LaboteUserId");
 
                     b.ToTable("UserTopics");
                 });
@@ -483,17 +485,6 @@ namespace Labote.Core.Migrations
                     b.Navigation("LaboteUser");
                 });
 
-            modelBuilder.Entity("Labote.Core.Entities.LaboteUser", b =>
-                {
-                    b.HasOne("Labote.Core.Entities.UserTopic", "UserTopic")
-                        .WithMany("LaboteUsers")
-                        .HasForeignKey("UserTopicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserTopic");
-                });
-
             modelBuilder.Entity("Labote.Core.Entities.UserMenuModule", b =>
                 {
                     b.HasOne("Labote.Core.Entities.MenuModule", "MenuModel")
@@ -516,6 +507,17 @@ namespace Labote.Core.Migrations
                         .HasForeignKey("UserTopicId");
 
                     b.Navigation("UserTopic");
+                });
+
+            modelBuilder.Entity("Labote.Core.Entities.UserTopic", b =>
+                {
+                    b.HasOne("Labote.Core.Entities.LaboteUser", "LaboteUser")
+                        .WithMany("UserTopic")
+                        .HasForeignKey("LaboteUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LaboteUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -579,6 +581,8 @@ namespace Labote.Core.Migrations
             modelBuilder.Entity("Labote.Core.Entities.LaboteUser", b =>
                 {
                     b.Navigation("FirmUserLaboteUsers");
+
+                    b.Navigation("UserTopic");
                 });
 
             modelBuilder.Entity("Labote.Core.Entities.MenuModule", b =>
@@ -593,8 +597,6 @@ namespace Labote.Core.Migrations
 
             modelBuilder.Entity("Labote.Core.Entities.UserTopic", b =>
                 {
-                    b.Navigation("LaboteUsers");
-
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

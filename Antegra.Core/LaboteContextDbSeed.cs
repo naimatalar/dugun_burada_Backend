@@ -42,12 +42,27 @@ namespace Labote.Core
         {
             try
             {
-              
+                var userTopic = new UserTopic
+                {
+                };
                 using (LaboteContext context = new LaboteContext())
                 {
                     using (var transaction = context.Database.BeginTransaction())
                     {
 
+                        context.UserTopics.Add(userTopic);
+                        context.SaveChanges();
+                        transaction.Commit();
+                    }
+                }
+
+
+
+                using (LaboteContext context = new LaboteContext())
+                {
+                    using (var transaction = context.Database.BeginTransaction())
+                    {
+                  
                         LaboteUser user = new LaboteUser();
                         if (_userManager.Users.Count() == 0)
                         {
@@ -60,8 +75,10 @@ namespace Labote.Core
                                 Lastname = "Kullanici",
                                 EmailConfirmed = true,
                                 NotDelete = true,
-                                
+                                UserTopicId = userTopic.Id
+
                             };
+
                             var usr = _userManager.CreateAsync(user, "Tg71!nG*").Result;
                         }
                         if (_roleManager.Roles.Count() == 0)
@@ -71,23 +88,23 @@ namespace Labote.Core
                                 Name = "SuperAdmin",
                                 NormalizedName = "SUPERADMİN",
                                 NotDelete = true,
-                                IsHidden=true
-
+                                IsHidden = true,
+                                UserTopicId = userTopic.Id
                             }).Result;
                             var userRol = _roleManager.CreateAsync(
                                 new UserRole
                                 {
                                     Name = "Admin",
                                     NormalizedName = "ADMİN",
-                                    IsHidden=false,
-                                    NotDelete=true,
-                                    
+                                    IsHidden = false,
+                                    UserTopicId = userTopic.Id
                                 }
                                 ).Result;
                             var RoleAdd = _userManager.AddToRoleAsync(user, "SuperAdmin").Result;
+                           
 
                         }
-
+                        context.SaveChanges();
                         transaction.Commit();
 
                     };
@@ -102,12 +119,12 @@ namespace Labote.Core
                         if (context.UserMenuModules.Count() == 0)
                         {
                             var role = (from roles in context.Roles.Where(x => x.Name == "SuperAdmin")
-                                      from userroles in context.UserRoles
-                                      where roles.Id == userroles.RoleId
-                                      select userroles).FirstOrDefault();
+                                        from userroles in context.UserRoles
+                                        where roles.Id == userroles.RoleId
+                                        select userroles).FirstOrDefault();
 
                             var data = context.MenuModules.ToList();
-                            
+
 
                             foreach (var item in data)
                             {
@@ -174,6 +191,55 @@ namespace Labote.Core
 
             #endregion
 
+            #region Süper Admin
+
+            var SuperAdmin = new MenuModule
+            {
+                IconName = "fas fa-user-shield",
+                PageName = "Süper Admin",
+                OrderNumber = 1,
+                IsMainPage = true,
+                PageUrl = "super-admin",
+                IsSuperAdmin = true
+            };
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    var Ky = MenuList.FirstOrDefault(x => x.PageName == SuperAdmin.PageName);
+                    if (Ky == null)
+                    {
+                        context.Add(SuperAdmin);
+                        context.SaveChanges();
+                    }
+                    else { SuperAdmin = Ky; }
+                    transaction.Commit();
+                }
+            }
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Firma Özellik Tanımları"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Firma Özellik Tanımları",
+                            PageUrl = "ozellik-tanimlari",
+                            ParentId = SuperAdmin.Id,
+                            OrderNumber = 1,
+                            IsSuperAdmin=true
+                        });
+                    }
+                 
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+            #endregion
+
+
             #region Yönetimsel Araçlar
 
             var KullaniciYonetimi = new MenuModule
@@ -239,11 +305,11 @@ namespace Labote.Core
             }
             #endregion
 
-            #region Yönetimsel Araçlar
+            #region Firmalarım
 
             var Firmalar = new MenuModule
             {
-                IconName = "fas fa-cogs",
+                IconName = "fas fa-store",
                 PageName = "Firmalarım",
                 OrderNumber = 1,
                 IsMainPage = true,
@@ -277,8 +343,8 @@ namespace Labote.Core
                             OrderNumber = 1,
                         });
                     }
-                  
-                   
+
+
 
                     context.SaveChanges();
                     transaction.Commit();
@@ -317,7 +383,7 @@ namespace Labote.Core
             }
             return true;
         }
-      
+
         public async Task<bool> CreateDefaultRoleAsync()
         {
             try
