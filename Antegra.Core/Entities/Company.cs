@@ -12,8 +12,7 @@ namespace Labote.Core.Entities
         public string Name { get; set; }
         public string Logo { get; set; }
         public virtual ICollection<FirmUserLaboteUser> FirmUserLaboteUsers { get; set; }
-
-        public virtual ICollection<CompanyPropertyKeyValue> CompanyPropertyKeyValues { get; set; }
+        public virtual ICollection<CompanyPropertyValue> CompanyPropertyValues { get; set; }
 
     }
 }

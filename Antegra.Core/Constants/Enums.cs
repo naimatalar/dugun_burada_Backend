@@ -37,7 +37,7 @@ namespace Labote.Core.Constants
             Price = 1,
             [Display(Description = "Teknik ve Lokasyon Özellikleri")]
             TechAndLocation = 2,
-            [Display(Description = "Hizmet ve Organizasyon ")]
+            [Display(Description = "Hizmet ve Organizasyon")]
             Organization = 3,
             [Display(Description = "Kapasite Bilgileri")]
             Capacity = 4,
@@ -48,10 +48,21 @@ namespace Labote.Core.Constants
             [Display(Description = "Hakkinda")]
             About = 6,
         }
+        public enum CompanyPropertyValueType
+        {
+            [Display(Description = "Yazı")]
+            String = 1,
+            [Display(Description = "Sayısal")]
+            Integer = 2,
+            [Display(Description = "Para")]
+            Money = 3,
+            [Display(Description = "Var/Yok")]
+            Bool = 4,
+        }
 
 
 
- 
+
 
         public const string Admin = "Admin";
         public const string User = "Kullanici";

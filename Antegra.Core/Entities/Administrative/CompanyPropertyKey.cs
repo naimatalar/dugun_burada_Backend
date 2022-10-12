@@ -7,15 +7,14 @@ using static Labote.Core.Constants.Enums;
 
 namespace Labote.Core.Entities.Administrative
 {
-    public class CompanyPropertyKeyValue:BaseEntity
+    public class CompanyPropertyKey:BaseEntity
     {
         public CompanyPropertyKind CompanyPropertyKind { get; set; }
-        public Company Company { get; set; }
-        public Guid CompanyId { get; set; }
+        public ICollection<CompanyPropertyValue> CompanyPropertyValues { get; set; }
         public string Key { get; set; }
         public bool IsOnlyValue { get; set; } = false;
         public bool IsPrimary { get; set; }
-        public string Value { get; set; }
-
+        public bool IsDefault { get; set; }
+        public CompanyPropertyValueType CompanyPropertyValueType { get; set; }
     }
 }

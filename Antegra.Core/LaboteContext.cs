@@ -33,7 +33,9 @@ namespace Labote.Core
         public DbSet<MenuModule> MenuModules { get; set; }
         public DbSet<UserMenuModule> UserMenuModules { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<CompanyPropertyKeyValue> CompanyPropertyKeyValues { get; set; }
+        public DbSet<CompanyPropertyKey> CompanyPropertyKeys { get; set; }
+        public DbSet<CompanyPropertyValue> CompanyPropertyValues { get; set; }
+
         public DbSet<FirmUserLaboteUser> FirmUserLaboteUsers { get; set; }
 
 
