@@ -11,8 +11,10 @@ namespace Labote.Core.Entities
     {
         public string Name { get; set; }
         public string Logo { get; set; }
-        public virtual ICollection<FirmUserLaboteUser> FirmUserLaboteUsers { get; set; }
-        public virtual ICollection<CompanyPropertyValue> CompanyPropertyValues { get; set; }
-
+        public bool IsPublish { get; set; } = false;
+        public CompanyType CompanyType { get; set; }
+        public Guid CompanyTypeId { get; set; }
+        public virtual ICollection<CompanyUserLaboteUser> FirmUserLaboteUsers { get; set; }
+        public virtual ICollection<CompanyTypePropertyValue> CompanyPropertyValues { get; set; }
     }
 }

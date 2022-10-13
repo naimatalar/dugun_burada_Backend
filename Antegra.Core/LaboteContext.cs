@@ -34,9 +34,10 @@ namespace Labote.Core
         public DbSet<UserMenuModule> UserMenuModules { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyPropertyKey> CompanyPropertyKeys { get; set; }
-        public DbSet<CompanyPropertyValue> CompanyPropertyValues { get; set; }
+        public DbSet<CompanyTypePropertyValue> CompanyPropertyValues { get; set; }
 
-        public DbSet<FirmUserLaboteUser> FirmUserLaboteUsers { get; set; }
+        public DbSet<CompanyUserLaboteUser> FirmUserLaboteUsers { get; set; }
+        public DbSet<CompanyType> CompanyTypes { get; set; }
 
 
 
@@ -58,8 +59,26 @@ namespace Labote.Core
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            builder.Entity<Company>()
+          .HasOne(p => p.CompanyType)
+          .WithMany(b => b.Companies).OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CompanyPropertyKey>()
+          .HasOne(p => p.CompanyType)
+          .WithMany(b => b.CompanyPropertyKeys).OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CompanyTypePropertyValue>()
+         .HasOne(p => p.CompanyPropertyKey)
+         .WithMany(b => b.CompanyPropertyValues).OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CompanyTypePropertyValue>()
+           .HasOne(p => p.Company)
+            .WithMany(b => b.CompanyPropertyValues).OnDelete(DeleteBehavior.Restrict);
+
+
+
             base.OnModelCreating(builder);
-            
         }
 
 

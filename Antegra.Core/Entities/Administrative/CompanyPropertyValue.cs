@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Labote.Core.Entities.Administrative
 {
-    public class CompanyPropertyValue:BaseEntity
+    public class CompanyTypePropertyValue:BaseEntity
     {
         public CompanyPropertyKey CompanyPropertyKey { get; set; }
         public Guid CompanyPropertyKeyId { get; set; }

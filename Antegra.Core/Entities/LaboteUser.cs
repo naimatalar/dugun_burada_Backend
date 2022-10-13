@@ -13,7 +13,7 @@ namespace Labote.Core.Entities
 
         public string FirstName { get; set; }
         public string Lastname { get; set; }
-        public virtual ICollection<FirmUserLaboteUser> FirmUserLaboteUsers { get; set; }
+        public virtual ICollection<CompanyUserLaboteUser> FirmUserLaboteUsers { get; set; }
         public string ConfirmCode { get; set; }
         public Enums.UserType UserType { get; set; }
         public bool IsActive { get; set; }

@@ -10,11 +10,14 @@ namespace Labote.Core.Entities.Administrative
     public class CompanyPropertyKey:BaseEntity
     {
         public CompanyPropertyKind CompanyPropertyKind { get; set; }
-        public ICollection<CompanyPropertyValue> CompanyPropertyValues { get; set; }
+        public ICollection<CompanyTypePropertyValue> CompanyPropertyValues { get; set; }
         public string Key { get; set; }
         public bool IsOnlyValue { get; set; } = false;
         public bool IsPrimary { get; set; }
         public bool IsDefault { get; set; }
         public CompanyPropertyValueType CompanyPropertyValueType { get; set; }
+
+        public CompanyType CompanyType { get; set; }
+        public Guid CompanyTypeId { get; set; }
     }
 }

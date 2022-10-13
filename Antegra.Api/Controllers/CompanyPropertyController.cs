@@ -1,10 +1,10 @@
 ﻿using Labote.Api.BindingModel;
 using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
-using Labote.Core.BindingModels.request;
+using Labote.Core.BindingModels.request.company;
 using Labote.Core.Constants;
 using Labote.Services;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -37,6 +37,7 @@ namespace Labote.Api.Controllers
                 IsPrimary = model.IsPrimary,
                 IsDefault = model.IsDefault,
                 Key = model.Key,
+                CompanyTypeId=model.CompanyTypeId,
                 CompanyPropertyValueType=(Enums.CompanyPropertyValueType)model.CompanyPropertyValueType
             });
             _context.SaveChanges();
@@ -54,6 +55,7 @@ namespace Labote.Api.Controllers
             data.IsPrimary = model.IsPrimary;
             data.IsDefault = model.IsDefault;   
             data.Key = model.Key;
+            data.CompanyTypeId = model.CompanyTypeId;  
             data.CompanyPropertyValueType = (Enums.CompanyPropertyValueType)model.CompanyPropertyValueType;
             _context.CompanyPropertyKeys.Update(data);
             _context.SaveChanges();
@@ -88,10 +90,10 @@ namespace Labote.Api.Controllers
             PageResponse.Data = data;
             return PageResponse;
         }
-        [HttpGet("GetAllByCompanyPropertyKind/{Kind}")]
-        public async Task<BaseResponseModel> GetAllByCompanyPropertyKind(int Kind)
+        [HttpGet("GetAllByCompanyPropertyKind/{Kind}/{TypeId}")]
+        public async Task<BaseResponseModel> GetAllByCompanyPropertyKind(int Kind,Guid TypeId)
         {
-            var data = _context.CompanyPropertyKeys.Where(x => x.IsActive && !x.IsDelete && x.CompanyPropertyKind== (Enums.CompanyPropertyKind)Kind)
+            var data = _context.CompanyPropertyKeys.Where(x => x.IsActive && !x.IsDelete && x.CompanyPropertyKind== (Enums.CompanyPropertyKind)Kind&&x.CompanyTypeId==TypeId)
                 .Select(x => new
                 {
                     x.Key,

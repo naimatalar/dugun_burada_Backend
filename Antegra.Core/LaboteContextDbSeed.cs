@@ -228,6 +228,27 @@ namespace Labote.Core
                             PageUrl = "ozellik-tanimlari",
                             ParentId = SuperAdmin.Id,
                             OrderNumber = 1,
+                            IsSuperAdmin = true
+                        });
+                    }
+
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Firma Türleri"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Firma Türleri",
+                            PageUrl = "firma-turleri",
+                            ParentId = SuperAdmin.Id,
+                            OrderNumber = 2,
                             IsSuperAdmin=true
                         });
                     }
