@@ -42,16 +42,61 @@ namespace Labote.Api.Controllers
             return PageResponse;
         }
 
+        [HttpGet("GetCompanyPropertyTypeById/{Id}")]
+        public async Task<BaseResponseModel> GetCompanyPropertyType(Guid Id)
+        {
+            var data = _context.CompanyPropertyKeys.Where(x=>x.CompanyTypeId==Id).Where(x => !x.IsDelete)
+                .Select(x => new
+                {
+                    x.Key,
+                    x.Id,
+                    CompanyPropertyKind=(int)x.CompanyPropertyKind
+                });
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+
+        [HttpPost("AddCompanyProperty")]
+        public async Task<BaseResponseModel> AddCompanyProperty(AddCompanyPropertyRequestModel model)
+        {
+            var data = _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue { 
+            CompanyId=model.CompanyId,
+            CompanyPropertyKeyId=model.CompanyPropertyKeyId,
+            Value=model.Value,
+            
+            });
+            _context.SaveChanges();
+            return PageResponse;
+        }
+        [HttpGet("GetCompanyPropertyValueByCompanyId/{id}")]
+        public async Task<BaseResponseModel> GetCompanyPropertyValueByCompanyId(Guid Id)
+        {
+            var data = _context.CompanyPropertyValues.Where(x => x.CompanyId == Id).Select(x => new
+            {
+                x.CompanyPropertyKey.Key,
+                x.Value,
+               
+            });
+            _context.SaveChanges();
+            return PageResponse;
+        }
+
+
+
         [HttpGet("GetByCurrentUser")]
+        [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> GetByCurrentUser()
         {
-            var data = _context.FirmUserLaboteUsers.Include(x=>x.Company).Where(x => x.LaboteUserId == CurrentUser.Id && !x.Company.IsDelete)
+            var data = _context.FirmUserLaboteUsers.Include(x=>x.Company).ThenInclude(x=>x.CompanyType).Include(x=>x.Company.CompanyPropertyValues).Where(x => x.LaboteUserId == CurrentUser.Id && !x.Company.IsDelete)
                 .Select(x => new
                 {
                     CompanyName = x.Company.Name,
                     CompanyLogo = x.Company.LogoUrl,
+                    CompanyType=x.Company.CompanyType.Name,
+                    CompanyTypeId= x.Company.CompanyType.Id,
                     x.Company.IsPublish,
                     x.CompanyId,
+                    CompanyPropertyValuesCount=x.Company.CompanyPropertyValues.Count(),
                     x.Id
                 })
                 .ToList();
