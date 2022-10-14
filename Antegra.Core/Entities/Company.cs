@@ -10,7 +10,7 @@ namespace Labote.Core.Entities
     public class Company:BaseEntity
     {
         public string Name { get; set; }
-        public string Logo { get; set; }
+        public string LogoUrl { get; set; }
         public bool IsPublish { get; set; } = false;
         public CompanyType CompanyType { get; set; }
         public Guid CompanyTypeId { get; set; }

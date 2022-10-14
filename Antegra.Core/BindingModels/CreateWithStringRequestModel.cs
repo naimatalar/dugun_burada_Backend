@@ -9,6 +9,6 @@ namespace Labote.Core.BindingModels
     public class CreateWithStringRequestModel
     {
         public Guid? Id { get; set; }
-        public string Key { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -34,8 +34,9 @@ namespace Labote.Api.Controllers
                 .Select(x => new
                 {
                     x.Name,
-                    CompaniesCount = x.Companies.Count(),
-                    x.Id
+                    CompanyCount = x.Companies.Count(),
+                    x.Id,
+                  
                 });
             PageResponse.Data = data;
             return PageResponse;
@@ -45,7 +46,7 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Create(CreateWithStringRequestModel model)
         {
-            var data = new Core.Entities.Administrative.CompanyType { Name = model.Key };
+            var data = new Core.Entities.Administrative.CompanyType { Name = model.Name };
             _context.CompanyTypes.Add(data);
           
             _context.SaveChanges(); 
@@ -60,7 +61,7 @@ namespace Labote.Api.Controllers
         {
 
             var data = _context.CompanyTypes.FirstOrDefault(x => x.Id == model.Id);
-            data.Name = model.Key;
+            data.Name = model.Name;
             _context.Update(data);
             _context.SaveChanges();
             PageResponse.Data = data;
@@ -105,7 +106,6 @@ namespace Labote.Api.Controllers
         [HttpGet("GetById/{Id}")]
         public async Task<BaseResponseModel> GetById(Guid Id)
         {
-
             var data = _context.CompanyTypes.FirstOrDefault(x => x.Id == Id);
             PageResponse.Data = data;
             return PageResponse;

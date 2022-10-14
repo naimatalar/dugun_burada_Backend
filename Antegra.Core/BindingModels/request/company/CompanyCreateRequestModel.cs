@@ -9,8 +9,10 @@ namespace Labote.Core.BindingModels.request.company
     public class CompanyCreateRequestModel
     {
         //public List<CompanyPropertyAddRequestModel> CompanyPropertyAddRequestModel { get; set; }
-        public string Logo { get; set; }
+        //public string Logo { get; set; }
+        public Guid? Id { get; set; }
         public string Name { get; set; }
+        public Guid CompanyTypeId { get; set; }
 
     }
 
