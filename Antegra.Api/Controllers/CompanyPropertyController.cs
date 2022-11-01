@@ -37,13 +37,56 @@ namespace Labote.Api.Controllers
                 IsPrimary = model.IsPrimary,
                 IsDefault = model.IsDefault,
                 Key = model.Key,
-                CompanyTypeId=model.CompanyTypeId,
-                CompanyPropertyValueType=(Enums.CompanyPropertyValueType)model.CompanyPropertyValueType
+                CompanyTypeId = model.CompanyTypeId,
+                CompanyPropertyValueType = (Enums.CompanyPropertyValueType)model.CompanyPropertyValueType
             });
             _context.SaveChanges();
 
             return PageResponse;
         }
+
+        [HttpPost("CreateList")]
+        [PermissionCheck(Action = pageName)]
+        public async Task<BaseResponseModel> CreateList(CompanyPropertyListRequestModel model)
+        {
+
+            using (var context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    var property = new Core.Entities.Administrative.CompanyPropertyKey
+                    {
+                        CompanyPropertyKind = (Enums.CompanyPropertyKind)model.CompanyPropertyKind,
+                        IsOnlyValue = model.IsOnlyValue,
+                        IsPrimary = model.IsPrimary,
+                        IsDefault = model.IsDefault,
+                        Key = model.Key,
+                        CompanyTypeId = model.CompanyTypeId,
+                        CompanyPropertyValueType = (Enums.CompanyPropertyValueType)model.CompanyPropertyValueType
+                    };
+                    context.CompanyPropertyKeys.Add(property);
+
+                    foreach (var item in model.ValueList)
+                    {
+                        context.PropertySelectLists.Add(new Core.Entities.Administrative.PropertySelectList
+                        {
+                            CompanyPropertyKeyId=property.Id,
+                            Item=item
+                        });
+                    }
+
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+
+
+
+
+            return PageResponse;
+        }
+
         [HttpPost("Edit")]
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Edit(CompanyPropertyCreateEditRequestModel model)
@@ -53,9 +96,9 @@ namespace Labote.Api.Controllers
             data.CompanyPropertyKind = (Enums.CompanyPropertyKind)model.CompanyPropertyKind;
             data.IsOnlyValue = model.IsOnlyValue;
             data.IsPrimary = model.IsPrimary;
-            data.IsDefault = model.IsDefault;   
+            data.IsDefault = model.IsDefault;
             data.Key = model.Key;
-            data.CompanyTypeId = model.CompanyTypeId;  
+            data.CompanyTypeId = model.CompanyTypeId;
             data.CompanyPropertyValueType = (Enums.CompanyPropertyValueType)model.CompanyPropertyValueType;
             _context.CompanyPropertyKeys.Update(data);
             _context.SaveChanges();
@@ -84,16 +127,16 @@ namespace Labote.Api.Controllers
                 x.IsOnlyValue,
                 x.IsPrimary,
                 x.CompanyPropertyValueType,
-                CompanyPropertyValueTypeString=x.CompanyPropertyValueType.GetDisiplayDescription(),
+                CompanyPropertyValueTypeString = x.CompanyPropertyValueType.GetDisiplayDescription(),
                 x.Id,
             }).ToList();
             PageResponse.Data = data;
             return PageResponse;
         }
         [HttpGet("GetAllByCompanyPropertyKind/{Kind}/{TypeId}")]
-        public async Task<BaseResponseModel> GetAllByCompanyPropertyKind(int Kind,Guid TypeId)
+        public async Task<BaseResponseModel> GetAllByCompanyPropertyKind(int Kind, Guid TypeId)
         {
-            var data = _context.CompanyPropertyKeys.Where(x => x.IsActive && !x.IsDelete && x.CompanyPropertyKind== (Enums.CompanyPropertyKind)Kind&&x.CompanyTypeId==TypeId)
+            var data = _context.CompanyPropertyKeys.Where(x => x.IsActive && !x.IsDelete && x.CompanyPropertyKind == (Enums.CompanyPropertyKind)Kind && x.CompanyTypeId == TypeId)
                 .Select(x => new
                 {
                     x.Key,
@@ -119,7 +162,7 @@ namespace Labote.Api.Controllers
                     x.IsDefault,
                     x.IsOnlyValue,
                     x.IsPrimary,
-                    CompanyPropertyValueType=(int)x.CompanyPropertyValueType,
+                    CompanyPropertyValueType = (int)x.CompanyPropertyValueType,
                     CompanyPropertyValueTypeString = x.CompanyPropertyValueType.GetDisiplayDescription(),
                     x.Id,
                 })

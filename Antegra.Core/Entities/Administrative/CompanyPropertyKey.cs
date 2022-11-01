@@ -11,6 +11,8 @@ namespace Labote.Core.Entities.Administrative
     {
         public CompanyPropertyKind CompanyPropertyKind { get; set; }
         public ICollection<CompanyTypePropertyValue> CompanyPropertyValues { get; set; }
+        public ICollection<PropertySelectList> PropertySelectLists { get; set; }
+
         public string Key { get; set; }
         public bool IsOnlyValue { get; set; } = false;
         public bool IsPrimary { get; set; }

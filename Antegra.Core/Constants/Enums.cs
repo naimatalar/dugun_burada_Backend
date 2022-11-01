@@ -12,7 +12,7 @@ namespace Labote.Core.Constants
     {
         public const string SecretKey = "9fbac4553b7548e6ad7401f201056083";
 
-    
+
 
         public enum JobScheduleTimeType
         {
@@ -47,6 +47,8 @@ namespace Labote.Core.Constants
             Faq = 5,
             [Display(Description = "Hakkinda")]
             About = 6,
+       
+
         }
         public enum CompanyPropertyValueType
         {
@@ -57,7 +59,9 @@ namespace Labote.Core.Constants
             [Display(Description = "Para")]
             Money = 3,
             [Display(Description = "Var/Yok")]
-            Bool = 4,
+            Bool = 4,  
+            [Display(Description = "Liste")]
+            List = 5,
         }
 
 
