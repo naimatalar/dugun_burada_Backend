@@ -31,7 +31,7 @@ namespace Labote.Api.Controllers
         [HttpGet("GetCompanyType")]
         public async Task<BaseResponseModel> GetProperyType()
         {
-            var data = _context.CompanyTypes.Where(x => !x.IsDelete)
+            var data = _context.CompanyTypes.Where(x => !x.IsDelete&&x.IsActive                                                                       )
                 .Select(x => new
                 {
                     x.Name,

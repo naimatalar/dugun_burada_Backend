@@ -6,6 +6,7 @@ using Labote.Core.Constants;
 using Labote.Services;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -65,15 +66,15 @@ namespace Labote.Api.Controllers
                         CompanyPropertyValueType = (Enums.CompanyPropertyValueType)model.CompanyPropertyValueType
                     };
                     context.CompanyPropertyKeys.Add(property);
-
                     foreach (var item in model.ValueList)
                     {
                         context.PropertySelectLists.Add(new Core.Entities.Administrative.PropertySelectList
                         {
-                            CompanyPropertyKeyId=property.Id,
-                            Item=item
+                            CompanyPropertyKeyId = property.Id,
+                            Item = item
                         });
                     }
+
 
 
                     context.SaveChanges();
@@ -89,19 +90,52 @@ namespace Labote.Api.Controllers
 
         [HttpPost("Edit")]
         [PermissionCheck(Action = pageName)]
-        public async Task<BaseResponseModel> Edit(CompanyPropertyCreateEditRequestModel model)
+        public async Task<BaseResponseModel> Edit(CompanyPropertyListRequestModel model)
         {
-            var data = _context.CompanyPropertyKeys.Where(x => x.Id == model.Id).FirstOrDefault();
+            using (var context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    var data = context.CompanyPropertyKeys.Include(x => x.PropertySelectLists).Where(x => x.Id == model.Id).FirstOrDefault();
 
-            data.CompanyPropertyKind = (Enums.CompanyPropertyKind)model.CompanyPropertyKind;
-            data.IsOnlyValue = model.IsOnlyValue;
-            data.IsPrimary = model.IsPrimary;
-            data.IsDefault = model.IsDefault;
-            data.Key = model.Key;
-            data.CompanyTypeId = model.CompanyTypeId;
-            data.CompanyPropertyValueType = (Enums.CompanyPropertyValueType)model.CompanyPropertyValueType;
-            _context.CompanyPropertyKeys.Update(data);
-            _context.SaveChanges();
+                    data.CompanyPropertyKind = (Enums.CompanyPropertyKind)model.CompanyPropertyKind;
+                    data.IsOnlyValue = model.IsOnlyValue;
+                    data.IsPrimary = model.IsPrimary;
+                    data.IsDefault = model.IsDefault;
+                    data.Key = model.Key;
+                    data.CompanyTypeId = model.CompanyTypeId;
+                    data.CompanyPropertyValueType = (Enums.CompanyPropertyValueType)model.CompanyPropertyValueType;
+                    context.CompanyPropertyKeys.Update(data);
+                    var slList = data.PropertySelectLists.ToList();
+                    foreach (var item in model.ValueList)
+                    {
+                        if (!slList.Any(x => x.Item == item))
+                        {
+                            context.PropertySelectLists.Add(new Core.Entities.Administrative.PropertySelectList
+                            {
+                                CompanyPropertyKeyId = data.Id,
+                                Item = item
+                            });
+                        }
+                    }
+                    foreach (var item in slList)
+                    {
+                        if (!model.ValueList.Any(x => x == item.Item))
+                        {
+                            item.IsDelete = true;
+                            context.PropertySelectLists.Update(item);
+                        } 
+                        
+                    }
+
+                   
+
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+
+            }
             return PageResponse;
         }
 
@@ -155,7 +189,7 @@ namespace Labote.Api.Controllers
         [HttpGet("GetById/{Id}")]
         public async Task<BaseResponseModel> GetById(Guid Id)
         {
-            var data = _context.CompanyPropertyKeys.Where(x => x.Id == Id)
+            var data = _context.CompanyPropertyKeys.Include(x=>x.PropertySelectLists).Where(x => x.Id == Id && x.IsActive && !x.IsDelete)
                 .Select(x => new
                 {
                     x.Key,
@@ -165,8 +199,11 @@ namespace Labote.Api.Controllers
                     CompanyPropertyValueType = (int)x.CompanyPropertyValueType,
                     CompanyPropertyValueTypeString = x.CompanyPropertyValueType.GetDisiplayDescription(),
                     x.Id,
+                    ValueList = x.PropertySelectLists.Where(x =>  x.IsActive && !x.IsDelete).Select(y => new { y.Item, y.Id })
                 })
                 .FirstOrDefault();
+
+
             PageResponse.Data = data;
             return PageResponse;
         }
