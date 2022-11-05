@@ -52,7 +52,7 @@ namespace Labote.Api.Controllers
                     x.Id,
                     CompanyPropertyKind=(int)x.CompanyPropertyKind
                 });
-            PageResponse.Data = data;
+            PageResponse.Data = data.ToList();
             return PageResponse;
         }
 
