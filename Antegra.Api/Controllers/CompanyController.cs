@@ -32,7 +32,7 @@ namespace Labote.Api.Controllers
         [HttpGet("GetCompanyType")]
         public async Task<BaseResponseModel> GetProperyType()
         {
-            var data = _context.CompanyTypes.Where(x => !x.IsDelete&&x.IsActive                                                                       )
+            var data = _context.CompanyTypes.Where(x => !x.IsDelete && x.IsActive)
                 .Select(x => new
                 {
                     x.Name,
@@ -46,12 +46,12 @@ namespace Labote.Api.Controllers
         [HttpGet("GetCompanyPropertyTypeById/{Id}")]
         public async Task<BaseResponseModel> GetCompanyPropertyType(Guid Id)
         {
-            var data = _context.CompanyPropertyKeys.Where(x=>x.CompanyTypeId==Id).Where(x => !x.IsDelete)
+            var data = _context.CompanyPropertyKeys.Where(x => x.CompanyTypeId == Id).Where(x => !x.IsDelete)
                 .Select(x => new
                 {
                     x.Key,
                     x.Id,
-                    CompanyPropertyKind=(int)x.CompanyPropertyKind
+                    CompanyPropertyKind = (int)x.CompanyPropertyKind
                 });
             PageResponse.Data = data.ToList();
             return PageResponse;
@@ -60,11 +60,12 @@ namespace Labote.Api.Controllers
         [HttpPost("AddCompanyProperty")]
         public async Task<BaseResponseModel> AddCompanyProperty(AddCompanyPropertyRequestModel model)
         {
-            var data = _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue { 
-            CompanyId=model.CompanyId,
-            CompanyPropertyKeyId=model.CompanyPropertyKeyId,
-            Value=model.Value,
-            
+            var data = _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue
+            {
+                CompanyId = model.CompanyId,
+                CompanyPropertyKeyId = model.CompanyPropertyKeyId,
+                Value = model.Value,
+
             });
             _context.SaveChanges();
             return PageResponse;
@@ -76,7 +77,7 @@ namespace Labote.Api.Controllers
             {
                 x.CompanyPropertyKey.Key,
                 x.Value,
-               
+
             });
             _context.SaveChanges();
             return PageResponse;
@@ -85,19 +86,19 @@ namespace Labote.Api.Controllers
 
 
         [HttpGet("GetByCurrentUser")]
-      
+
         public async Task<BaseResponseModel> GetByCurrentUser()
         {
-            var data = _context.FirmUserLaboteUsers.Include(x=>x.Company).ThenInclude(x=>x.CompanyType).Include(x=>x.Company.CompanyPropertyValues).Where(x => x.LaboteUserId == CurrentUser.Id && !x.Company.IsDelete)
+            var data = _context.FirmUserLaboteUsers.Include(x => x.Company).ThenInclude(x => x.CompanyType).Include(x => x.Company.CompanyPropertyValues).Where(x => x.LaboteUserId == CurrentUser.Id && !x.Company.IsDelete)
                 .Select(x => new
                 {
                     CompanyName = x.Company.Name,
                     CompanyLogo = x.Company.LogoUrl,
-                    CompanyType=x.Company.CompanyType.Name,
-                    CompanyTypeId= x.Company.CompanyType.Id,
+                    CompanyType = x.Company.CompanyType.Name,
+                    CompanyTypeId = x.Company.CompanyType.Id,
                     x.Company.IsPublish,
                     x.CompanyId,
-                    CompanyPropertyValuesCount=x.Company.CompanyPropertyValues.Count(),
+                    CompanyPropertyValuesCount = x.Company.CompanyPropertyValues.Count(),
                     x.Id
                 })
                 .ToList();
@@ -114,11 +115,11 @@ namespace Labote.Api.Controllers
             {
                 using (var transaction = context.Database.BeginTransaction())
                 {
-                     comp = new Company
+                    comp = new Company
                     {
                         Name = model.Name,
-                         CompanyTypeId = model.CompanyTypeId
-                     };
+                        CompanyTypeId = model.CompanyTypeId
+                    };
                     context.Companies.Add(comp);
                     context.FirmUserLaboteUsers.Add(new Core.Entities.CompanyUserLaboteUser
                     {
@@ -142,11 +143,11 @@ namespace Labote.Api.Controllers
             {
                 using (var transaction = context.Database.BeginTransaction())
                 {
-                    comp=context.Companies.Where(x => x.Id == model.Id).FirstOrDefault();
+                    comp = context.Companies.Where(x => x.Id == model.Id).FirstOrDefault();
 
-                    comp. Name = model.Name;
+                    comp.Name = model.Name;
                     comp.CompanyTypeId = model.CompanyTypeId;
-                    
+
                     context.Companies.Update(comp);
                     context.SaveChanges();
                     transaction.Commit();
@@ -197,6 +198,25 @@ namespace Labote.Api.Controllers
             return PageResponse;
 
         }
+
+        [HttpGet("GetFullDataCompanyById/{Id}")]
+        public async Task<BaseResponseModel> GetWithCompanyTypeById(Guid Id)
+        {
+            var data = _context.Companies.Select(x => new
+            {
+                x.Id,
+                x.IsPublish,
+                x.Name,
+                x.LogoUrl,
+                CompanyType = x.CompanyType.Name,
+                x.CompanyTypeId,
+                
+            }).FirstOrDefault(x => x.Id == Id);
+            PageResponse.Data = data;
+            return PageResponse;
+
+        }
+
 
         [HttpGet("Delete/{Id}")]
         public async Task<BaseResponseModel> Delete(Guid Id)
