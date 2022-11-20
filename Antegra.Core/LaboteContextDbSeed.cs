@@ -364,13 +364,31 @@ namespace Labote.Core
                             OrderNumber = 1,
                         });
                     }
-
-
-
                     context.SaveChanges();
                     transaction.Commit();
                 }
             }
+
+         using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Firma Özellikleri"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Firma Özellikleri",
+                            PageUrl = "firma-ozellikleri",
+                            ParentId = Firmalar.Id,
+                            OrderNumber = 1,
+                            IsHidden=true
+                        });
+                    }
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+
             #endregion
 
 

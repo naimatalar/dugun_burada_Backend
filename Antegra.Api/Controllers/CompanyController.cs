@@ -23,9 +23,10 @@ namespace Labote.Api.Controllers
         private readonly LaboteContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public CompanyController(LaboteContext context)
+        public CompanyController(LaboteContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet("GetCompanyType")]
@@ -84,7 +85,7 @@ namespace Labote.Api.Controllers
 
 
         [HttpGet("GetByCurrentUser")]
-        [PermissionCheck(Action = pageName)]
+      
         public async Task<BaseResponseModel> GetByCurrentUser()
         {
             var data = _context.FirmUserLaboteUsers.Include(x=>x.Company).ThenInclude(x=>x.CompanyType).Include(x=>x.Company.CompanyPropertyValues).Where(x => x.LaboteUserId == CurrentUser.Id && !x.Company.IsDelete)
@@ -176,7 +177,7 @@ namespace Labote.Api.Controllers
         public async Task<dynamic> FileDelete(FileUploadControllerModel model)
         {
 
-            var dd = _context.CompanyTypes.Where(x => x.Id == model.Id).FirstOrDefault();
+            var dd = _context.Companies.Where(x => x.Id == model.Id).FirstOrDefault();
             if (!string.IsNullOrEmpty(dd.LogoUrl))
             {
                 FileUploadService.Delete(dd.LogoUrl, _hostingEnvironment);
