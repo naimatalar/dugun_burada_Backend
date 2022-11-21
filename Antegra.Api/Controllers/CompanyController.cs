@@ -210,13 +210,37 @@ namespace Labote.Api.Controllers
                 x.LogoUrl,
                 CompanyType = x.CompanyType.Name,
                 x.CompanyTypeId,
-                
+
             }).FirstOrDefault(x => x.Id == Id);
             PageResponse.Data = data;
             return PageResponse;
 
         }
+        [HttpGet("GetCompanyPropertyByCompanyAndPropertyId/{CompanyId}/{PropertyKind}")]
+        public async Task<BaseResponseModel> GetCompanyPropertyByCompanyAndPropertyId(Guid CompanyId, int PropertyKind)
+        {
+            var compnay = _context.Companies.Include(x => x.CompanyPropertyValues).Where(x => x.Id == CompanyId).FirstOrDefault();
+            var keys = _context.CompanyPropertyKeys.Where(x => x.CompanyTypeId == compnay.CompanyTypeId && x.CompanyPropertyKind == (Core.Constants.Enums.CompanyPropertyKind)PropertyKind && x.IsDelete == false).Select(x => new
+            {
+                x.Key,   
+                CompanyPropertyValueType = (int)x.CompanyPropertyValueType,
+                x.Id,
+                CompanyPropertyValues = x.CompanyPropertyValues.Select(y => new
+                {
+                    y.Value,
 
+                    PropertySelectLists = y.CompanyPropertyKey.PropertySelectLists.Select(z => new
+                    {
+                        z.Item,
+
+                    }),
+                }).FirstOrDefault()
+            });
+
+            PageResponse.Data = keys;
+            return PageResponse;
+
+        }
 
         [HttpGet("Delete/{Id}")]
         public async Task<BaseResponseModel> Delete(Guid Id)
