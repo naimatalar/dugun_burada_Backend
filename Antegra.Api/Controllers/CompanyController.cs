@@ -2,6 +2,7 @@
 using Labote.Api.BindingModel.RequestModel;
 using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
+using Labote.Core.BindingModels.request;
 using Labote.Core.BindingModels.request.company;
 using Labote.Core.Entities;
 using Labote.Services;
@@ -42,7 +43,53 @@ namespace Labote.Api.Controllers
             PageResponse.Data = data;
             return PageResponse;
         }
+        [HttpPost("SetProperty")]
+        [PermissionCheck(Action = pageName)]
+        public async Task<BaseResponseModel> SetProperty(PropertyValueSetRequestModel model)
+        {
+            var dda = _context.CompanyPropertyValues.FirstOrDefault(x => x.CompanyId == model.CompanyId && x.CompanyPropertyKeyId == model.ProperyId);
 
+            if (dda == null)
+            {
+                _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue
+                {
+                    Value = model.Value.ToString(),
+                    CompanyPropertyKeyId = model.ProperyId,
+                    CompanyId = model.CompanyId
+
+                });
+            }else{
+                dda.Value = model.Value.ToString();
+                _context.Update(dda);
+            }
+            _context.SaveChanges();
+            return PageResponse;
+        }
+
+        [HttpPost("SetPropertyList")]
+        [PermissionCheck(Action = pageName)]
+        public async Task<BaseResponseModel> SetPropertyList(PropertyValueSetRequestModel model)
+        {
+            //var dda = _context.PropertySelectLists.FirstOrDefault(x => x. == model.CompanyId && x.CompanyPropertyKeyId == model.ProperyId);
+
+            //if (dda == null)
+            //{
+            //    _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue
+            //    {
+            //        Value = model.Value.ToString(),
+            //        CompanyPropertyKeyId = model.ProperyId,
+            //        CompanyId = model.CompanyId
+
+            //    });
+            //}
+            //else
+            //{
+            //    dda.Value = model.Value.ToString();
+            //    _context.Update(dda);
+            //}
+            //_context.SaveChanges();
+            return PageResponse;
+        }
         [HttpGet("GetCompanyPropertyTypeById/{Id}")]
         public async Task<BaseResponseModel> GetCompanyPropertyType(Guid Id)
         {
@@ -222,9 +269,15 @@ namespace Labote.Api.Controllers
             var compnay = _context.Companies.Include(x => x.CompanyPropertyValues).Where(x => x.Id == CompanyId).FirstOrDefault();
             var keys = _context.CompanyPropertyKeys.Where(x => x.CompanyTypeId == compnay.CompanyTypeId && x.CompanyPropertyKind == (Core.Constants.Enums.CompanyPropertyKind)PropertyKind && x.IsDelete == false).Select(x => new
             {
-                x.Key,   
+                x.Key,
                 CompanyPropertyValueType = (int)x.CompanyPropertyValueType,
                 x.Id,
+                //PropertySelectLists = x.PropertySelectLists.Select(z => new
+                //{
+                //    z.Item,
+                //    z.Id
+                //}),
+                
                 CompanyPropertyValues = x.CompanyPropertyValues.Select(y => new
                 {
                     y.Value,
@@ -232,10 +285,11 @@ namespace Labote.Api.Controllers
                     PropertySelectLists = y.CompanyPropertyKey.PropertySelectLists.Select(z => new
                     {
                         z.Item,
+                        z.Id
 
                     }),
                 }).FirstOrDefault()
-            });
+            }); ;
 
             PageResponse.Data = keys;
             return PageResponse;

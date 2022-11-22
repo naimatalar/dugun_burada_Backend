@@ -4,14 +4,16 @@ using Labote.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Labote.Core.Migrations
 {
     [DbContext(typeof(LaboteContext))]
-    partial class LaboteContextModelSnapshot : ModelSnapshot
+    [Migration("20221122173808_sdffgdgdfgdfgdfg")]
+    partial class sdffgdgdfgdfgdfg
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +129,7 @@ namespace Labote.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CompanyPropertyKeyId")
@@ -588,15 +590,19 @@ namespace Labote.Core.Migrations
 
             modelBuilder.Entity("Labote.Core.Entities.Administrative.PropertySelectList", b =>
                 {
-                    b.HasOne("Labote.Core.Entities.Company", null)
+                    b.HasOne("Labote.Core.Entities.Company", "Company")
                         .WithMany("PropertySelectLists")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Labote.Core.Entities.Administrative.CompanyPropertyKey", "CompanyPropertyKey")
                         .WithMany("PropertySelectLists")
                         .HasForeignKey("CompanyPropertyKeyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
 
                     b.Navigation("CompanyPropertyKey");
                 });

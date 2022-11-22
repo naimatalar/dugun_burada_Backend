@@ -77,7 +77,6 @@ namespace Labote.Core
             .WithMany(b => b.CompanyPropertyValues).OnDelete(DeleteBehavior.Restrict);
 
 
-
             base.OnModelCreating(builder);
         }
 
