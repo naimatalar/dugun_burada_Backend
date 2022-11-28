@@ -4,14 +4,16 @@ using Labote.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Labote.Core.Migrations
 {
     [DbContext(typeof(LaboteContext))]
-    partial class LaboteContextModelSnapshot : ModelSnapshot
+    [Migration("20221127225404_mmhdafsd")]
+    partial class mmhdafsd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,16 +160,7 @@ namespace Labote.Core.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("PropertySelectListId")
+                    b.Property<Guid?>("PropertySelectListId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -632,9 +625,7 @@ namespace Labote.Core.Migrations
 
                     b.HasOne("Labote.Core.Entities.Administrative.PropertySelectList", "PropertySelectList")
                         .WithMany("PropertySelectListValues")
-                        .HasForeignKey("PropertySelectListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PropertySelectListId");
 
                     b.Navigation("Company");
 

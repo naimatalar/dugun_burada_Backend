@@ -10,7 +10,7 @@ namespace Labote.Core.Entities.Administrative
     {
         public CompanyPropertyKey CompanyPropertyKey { get; set; }
         public Guid CompanyPropertyKeyId { get; set; }
-     
+        public virtual ICollection<PropertySelectListValue> PropertySelectListValues { get; set; }
         public string Item { get; set; }
     }
 }

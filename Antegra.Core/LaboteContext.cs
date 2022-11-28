@@ -38,6 +38,7 @@ namespace Labote.Core
         public DbSet<CompanyUserLaboteUser> FirmUserLaboteUsers { get; set; }
         public DbSet<CompanyType> CompanyTypes { get; set; }
         public DbSet<PropertySelectList> PropertySelectLists { get; set; }
+        public DbSet<PropertySelectListValue> PropertySelectListValue { get; set; }
 
 
 

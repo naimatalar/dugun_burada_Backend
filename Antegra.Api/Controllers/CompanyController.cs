@@ -58,7 +58,9 @@ namespace Labote.Api.Controllers
                     CompanyId = model.CompanyId
 
                 });
-            }else{
+            }
+            else
+            {
                 dda.Value = model.Value.ToString();
                 _context.Update(dda);
             }
@@ -91,6 +93,7 @@ namespace Labote.Api.Controllers
             return PageResponse;
         }
         [HttpGet("GetCompanyPropertyTypeById/{Id}")]
+
         public async Task<BaseResponseModel> GetCompanyPropertyType(Guid Id)
         {
             var data = _context.CompanyPropertyKeys.Where(x => x.CompanyTypeId == Id).Where(x => !x.IsDelete)
@@ -105,18 +108,57 @@ namespace Labote.Api.Controllers
         }
 
         [HttpPost("AddCompanyProperty")]
+        [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> AddCompanyProperty(AddCompanyPropertyRequestModel model)
         {
-            var data = _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue
+            var hasData = _context.CompanyPropertyValues.Where(x => x.CompanyId == model.CompanyId && x.CompanyPropertyKeyId == model.CompanyPropertyKeyId).FirstOrDefault();
+            if (hasData == null)
             {
-                CompanyId = model.CompanyId,
-                CompanyPropertyKeyId = model.CompanyPropertyKeyId,
-                Value = model.Value,
+                var data = _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue
+                {
+                    CompanyId = model.CompanyId,
+                    CompanyPropertyKeyId = model.CompanyPropertyKeyId,
+                    Value = model.Value,
 
-            });
-            _context.SaveChanges();
+                });
+                _context.SaveChanges();
+            }
+            else
+            {
+                hasData.Value = model.Value;
+                _context.Update(hasData);
+                _context.SaveChanges();
+            }
+
+
+            
             return PageResponse;
         }
+        [HttpPost("AddCompanyListProperty")]
+        [PermissionCheck(Action = pageName)]
+        public async Task<BaseResponseModel> AddCompanyListProperty(AddCompanyListPropertyRequestModel model)
+        {
+            if (model.IsActive)
+            {
+                _context.PropertySelectListValue.Add(new Core.Entities.Administrative.PropertySelectListValue
+                {
+                    CompanyId = model.CompanyId,
+                    PropertySelectListId = model.ItemId
+                });
+                _context.SaveChanges();
+            }
+            else
+            {
+                var data = _context.PropertySelectListValue.Where(x => x.CompanyId == model.CompanyId && x.PropertySelectListId == model.ItemId).FirstOrDefault();
+                data.IsDelete = true;
+                _context.Update(data);
+                _context.SaveChanges();
+            }
+
+            return PageResponse;
+        }
+
+
         [HttpGet("GetCompanyPropertyValueByCompanyId/{id}")]
         public async Task<BaseResponseModel> GetCompanyPropertyValueByCompanyId(Guid Id)
         {
@@ -272,24 +314,24 @@ namespace Labote.Api.Controllers
                 x.Key,
                 CompanyPropertyValueType = (int)x.CompanyPropertyValueType,
                 x.Id,
-                //PropertySelectLists = x.PropertySelectLists.Select(z => new
-                //{
-                //    z.Item,
-                //    z.Id
-                //}),
-                
-                CompanyPropertyValues = x.CompanyPropertyValues.Select(y => new
+                PropertySelectLists = x.PropertySelectLists.Where(x => !x.IsDelete).Select(z => new
+                {
+                    z.Item,
+                    z.Id,
+                    Values = z.PropertySelectListValues.Where(x => !x.IsDelete).Select(x => new
+                    {
+                        x.Id,
+                        x.PropertySelectListId
+
+                    })
+                }),
+
+                CompanyPropertyValues = x.CompanyPropertyValues.Where(x => !x.IsDelete).Select(y => new
                 {
                     y.Value,
 
-                    PropertySelectLists = y.CompanyPropertyKey.PropertySelectLists.Select(z => new
-                    {
-                        z.Item,
-                        z.Id
-
-                    }),
                 }).FirstOrDefault()
-            }); ;
+            }).OrderBy(x => x.CompanyPropertyValueType); ;
 
             PageResponse.Data = keys;
             return PageResponse;
