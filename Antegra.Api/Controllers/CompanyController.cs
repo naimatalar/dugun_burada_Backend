@@ -51,18 +51,31 @@ namespace Labote.Api.Controllers
 
             if (dda == null)
             {
-                _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue
+                if (!string.IsNullOrEmpty(model.Value?.ToString()))
                 {
-                    Value = model.Value.ToString(),
-                    CompanyPropertyKeyId = model.ProperyId,
-                    CompanyId = model.CompanyId
+                    _context.CompanyPropertyValues.Add(new Core.Entities.Administrative.CompanyTypePropertyValue
+                    {
+                        Value = model.Value.ToString(),
+                        CompanyPropertyKeyId = model.ProperyId,
+                        CompanyId = model.CompanyId
 
-                });
+                    });
+                }
+            
             }
             else
             {
-                dda.Value = model.Value.ToString();
-                _context.Update(dda);
+                if (string.IsNullOrEmpty(model.Value?.ToString()))
+                {
+                    _context.Remove(dda);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    dda.Value = model.Value?.ToString();
+                    _context.Update(dda);
+                }
+
             }
             _context.SaveChanges();
             return PageResponse;
@@ -131,27 +144,39 @@ namespace Labote.Api.Controllers
             }
 
 
-            
+
             return PageResponse;
         }
         [HttpPost("AddCompanyListProperty")]
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> AddCompanyListProperty(AddCompanyListPropertyRequestModel model)
         {
+            var data = _context.PropertySelectListValue.Where(x => x.CompanyId == model.CompanyId && x.PropertySelectListId == model.ItemId).FirstOrDefault();
+
             if (model.IsActive)
             {
-                _context.PropertySelectListValue.Add(new Core.Entities.Administrative.PropertySelectListValue
+                if (data == null)
                 {
-                    CompanyId = model.CompanyId,
-                    PropertySelectListId = model.ItemId
-                });
-                _context.SaveChanges();
+                    _context.PropertySelectListValue.Add(new Core.Entities.Administrative.PropertySelectListValue
+                    {
+                        CompanyId = model.CompanyId,
+                        PropertySelectListId = model.ItemId
+                    });
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    _context.Remove(data);
+
+                    _context.SaveChanges();
+                }
+
             }
             else
             {
-                var data = _context.PropertySelectListValue.Where(x => x.CompanyId == model.CompanyId && x.PropertySelectListId == model.ItemId).FirstOrDefault();
-                data.IsDelete = true;
-                _context.Update(data);
+
+                _context.Remove(data);
+
                 _context.SaveChanges();
             }
 

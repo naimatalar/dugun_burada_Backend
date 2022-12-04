@@ -31,6 +31,40 @@ namespace Labote.Core.Constants
             Personal = 2,
 
         }
+
+        public enum ContactType
+        {
+            [Display(Description = "Telefon")]
+            Phone1 = 1,
+            [Display(Description = "Telefon")]
+            Phone2 = 6,
+            [Display(Description = "Telefon")]
+            Phone3 = 7,
+            [Display(Description = "Telefon")]
+            Phone4 = 8,
+            [Display(Description = "İnstagram")]
+            Instagram = 2,
+            [Display(Description = "Youtube")]
+            Youtube = 3,
+            [Display(Description = "Linkedin")]
+            Linkedin = 4,
+            [Display(Description = "Facebook")]
+            Facebook = 5,
+            [Display(Description = "E-Posta")]
+            Email = 9,
+            [Display(Description = "Web Site")]
+            WebSite = 10,
+            [Display(Description = "Adres")]
+            Address = 11,
+            [Display(Description = "langitude")]
+            Lang = 12,
+            [Display(Description = "latitude")]
+            lat = 13,
+            [Display(Description = "Harita")]
+            Map = 14,
+        }
+
+
         public enum CompanyPropertyKind
         {
             [Display(Description = "Fiyatlandırma")]
@@ -43,11 +77,8 @@ namespace Labote.Core.Constants
             Capacity = 4,
             [Display(Description = "Genel Özellikler")]
             General = 5,
-            [Display(Description = "Sık Sorulan Sorular")]
-            Faq = 5,
-            [Display(Description = "Hakkinda")]
-            About = 6,
-       
+ 
+
 
         }
         public enum CompanyPropertyValueType
@@ -59,7 +90,7 @@ namespace Labote.Core.Constants
             [Display(Description = "Para")]
             Money = 3,
             [Display(Description = "Var/Yok")]
-            Bool = 4,  
+            Bool = 4,
             [Display(Description = "Liste")]
             List = 5,
         }

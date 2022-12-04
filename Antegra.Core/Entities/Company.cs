@@ -17,6 +17,9 @@ namespace Labote.Core.Entities
         public virtual ICollection<CompanyUserLaboteUser> FirmUserLaboteUsers { get; set; }
         public virtual ICollection<CompanyTypePropertyValue> CompanyPropertyValues { get; set; }
         public virtual ICollection<PropertySelectListValue> PropertySelectListValues { get; set; }
+        public virtual ICollection<Faq> Faqs { get; set; }
+        public virtual ICollection<AboutUs> AboutUses { get; set; }
+        public virtual ICollection<ContactUs> ContactUses { get; set; }
 
 
     }

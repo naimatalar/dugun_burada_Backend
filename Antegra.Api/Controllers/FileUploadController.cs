@@ -26,6 +26,13 @@ namespace Labote.Api.Controllers
             PageResponse.Data = new { FileName = model.File.UploadFile(_hostingEnvironment) };
             return PageResponse;
         }
-
+        [HttpPost("ImageUpload")]
+        public async Task<dynamic> ImageUpload([FromForm]FileUploadRequestModel model)
+        {
+           
+           
+            PageResponse.Data = new { FileName = model.File.UploadImage(_hostingEnvironment) };
+            return PageResponse;
+        }
     }
 }

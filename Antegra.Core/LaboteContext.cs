@@ -39,6 +39,9 @@ namespace Labote.Core
         public DbSet<CompanyType> CompanyTypes { get; set; }
         public DbSet<PropertySelectList> PropertySelectLists { get; set; }
         public DbSet<PropertySelectListValue> PropertySelectListValue { get; set; }
+        public DbSet<AboutUs> AboutUses { get; set; }
+        public DbSet<Faq> Faqs { get; set; }
+        public DbSet<ContactUs> ContactUses { get; set; }
 
 
 
