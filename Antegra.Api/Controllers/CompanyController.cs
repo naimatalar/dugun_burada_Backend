@@ -61,7 +61,7 @@ namespace Labote.Api.Controllers
 
                     });
                 }
-            
+
             }
             else
             {
@@ -80,6 +80,48 @@ namespace Labote.Api.Controllers
             _context.SaveChanges();
             return PageResponse;
         }
+        [HttpPost("UploadImage")]
+        [PermissionCheck(Action = pageName)]
+        public async Task<BaseResponseModel> UploadImage(FileUploadWithExtension model)
+        {
+            var dataCount = _context.CompanyImages.Where(x=>x.CompanyId==model.Id&&x.ImageUrl.Contains("_x1")).Count();
+            if (dataCount > 9)
+            {
+                PageResponse.Message = "En Fazla 10 Adet Resim Yüklenebilir";
+                PageResponse.IsError = true;
+                return PageResponse;
+            }
+            _context.CompanyImages.Add(new Core.Entities.Administrative.CompanyImage { CompanyId = model.Id, ImageUrl = model.FileName+model.Extension });
+            _context.CompanyImages.Add(new Core.Entities.Administrative.CompanyImage { CompanyId = model.Id, ImageUrl = model.FileName+ "_x2" + model.Extension });
+            _context.CompanyImages.Add(new Core.Entities.Administrative.CompanyImage { CompanyId = model.Id, ImageUrl = model.FileName+ "_x1" + model.Extension });
+
+            _context.SaveChanges();
+            return PageResponse;
+        }
+
+        [HttpGet("GetImages/{companyId}")]
+        [PermissionCheck(Action = pageName)]
+        public async Task<BaseResponseModel> GetImages(Guid companyId)
+        {
+            var resultd = _context.CompanyImages.Where(x => x.CompanyId == companyId);
+            PageResponse.Data = resultd;
+            return PageResponse;
+        }
+
+
+        [HttpPost("RemoveImage")]
+        [PermissionCheck(Action = pageName)]
+        public async Task<BaseResponseModel> RemoveImage(FileUploadControllerModel model)
+        {
+
+            FileUploadService.DeleteImage(model.FileName, _hostingEnvironment);
+            var fls = model.FileName.Split('.')[0];
+            var files = _context.CompanyImages.Where(x => x.ImageUrl.Contains(fls));
+            _context.CompanyImages.RemoveRange(files);
+            _context.SaveChanges();
+            return PageResponse;
+        }
+
 
         [HttpPost("SetPropertyList")]
         [PermissionCheck(Action = pageName)]

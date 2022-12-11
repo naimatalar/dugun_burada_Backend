@@ -20,6 +20,7 @@ namespace Labote.Core.Entities
         public virtual ICollection<Faq> Faqs { get; set; }
         public virtual ICollection<AboutUs> AboutUses { get; set; }
         public virtual ICollection<ContactUs> ContactUses { get; set; }
+        public virtual ICollection<CompanyImage> CompanyImages { get; set; }
 
 
     }

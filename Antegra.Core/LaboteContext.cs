@@ -42,6 +42,7 @@ namespace Labote.Core
         public DbSet<AboutUs> AboutUses { get; set; }
         public DbSet<Faq> Faqs { get; set; }
         public DbSet<ContactUs> ContactUses { get; set; }
+        public DbSet<CompanyImage> CompanyImages { get; set; }
 
 
 

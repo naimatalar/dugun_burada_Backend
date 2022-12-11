@@ -31,7 +31,7 @@ namespace Labote.Api.Controllers
         {
            
            
-            PageResponse.Data = new { FileName = model.File.UploadImage(_hostingEnvironment) };
+            PageResponse.Data = new { file = model.File.UploadImage(_hostingEnvironment) };
             return PageResponse;
         }
     }
