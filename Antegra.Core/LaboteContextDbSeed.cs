@@ -227,6 +227,27 @@ namespace Labote.Core
                             PageName = "Firma Özellik Tanımları",
                             PageUrl = "ozellik-tanimlari",
                             ParentId = SuperAdmin.Id,
+                            OrderNumber = 3,
+                            IsSuperAdmin = true
+                        });
+                    }
+
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Firma Grupları"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Firma Grupları",
+                            PageUrl = "firma-gruplari",
+                            ParentId = SuperAdmin.Id,
                             OrderNumber = 1,
                             IsSuperAdmin = true
                         });

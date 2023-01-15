@@ -14,6 +14,8 @@ namespace Labote.Core.Entities
         public bool IsPublish { get; set; } = false;
         public CompanyType CompanyType { get; set; }
         public Guid CompanyTypeId { get; set; }
+        public CompanyGroup CompanyGroup { get; set; }
+        public Guid? CompanyGroupId { get; set; }
         public virtual ICollection<CompanyUserLaboteUser> FirmUserLaboteUsers { get; set; }
         public virtual ICollection<CompanyTypePropertyValue> CompanyPropertyValues { get; set; }
         public virtual ICollection<PropertySelectListValue> PropertySelectListValues { get; set; }
