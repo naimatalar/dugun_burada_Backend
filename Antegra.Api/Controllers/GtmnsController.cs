@@ -36,7 +36,8 @@ namespace Labote.Api.Controllers
                   z.LogoUrl,
                   z.Name,
                 }),
-                x.Name
+                x.Name,
+                x.Id
             }).ToList();
             var ddsa = _context.CompanyTypes.Where(y => y.ShowMenu == true).Select(x => new {x.Name,x.Id,x.LogoUrl});
             
