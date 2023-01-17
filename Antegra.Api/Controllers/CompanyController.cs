@@ -4,6 +4,7 @@ using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
 using Labote.Core.BindingModels.request;
 using Labote.Core.BindingModels.request.company;
+using Labote.Core.Constants;
 using Labote.Core.Entities;
 using Labote.Services;
 using Microsoft.AspNetCore.Http;
@@ -266,6 +267,7 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Create(CompanyCreateRequestModel model)
         {
+            var dd = IlIlceJson.GetIlIlce().Where(x=>x.plaka==model.IlPlaka).FirstOrDefault();
             var comp = new Company();
             using (var context = new LaboteContext())
             {
@@ -274,7 +276,11 @@ namespace Labote.Api.Controllers
                     comp = new Company
                     {
                         Name = model.Name,
-                        CompanyTypeId = model.CompanyTypeId
+                        CompanyTypeId = model.CompanyTypeId,
+                        IlPlaka=model.IlPlaka,
+                        Il=dd.il,
+                        Ilce=model.Ilce
+
                     };
                     context.Companies.Add(comp);
                     context.FirmUserLaboteUsers.Add(new Core.Entities.CompanyUserLaboteUser
@@ -286,6 +292,7 @@ namespace Labote.Api.Controllers
                     transaction.Commit();
                 }
             }
+            comp.FirmUserLaboteUsers = null;
             PageResponse.Data = comp;
             return PageResponse;
         }
@@ -294,6 +301,7 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Edit(CompanyCreateRequestModel model)
         {
+            var dd = IlIlceJson.GetIlIlce().Where(x => x.plaka == model.IlPlaka).FirstOrDefault();
             var comp = new Company();
             using (var context = new LaboteContext())
             {
@@ -303,7 +311,9 @@ namespace Labote.Api.Controllers
 
                     comp.Name = model.Name;
                     comp.CompanyTypeId = model.CompanyTypeId;
-
+                    comp.IlPlaka = model.IlPlaka;
+                    comp.Il = dd.il;
+                    comp.Ilce = model.Ilce;    
                     context.Companies.Update(comp);
                     context.SaveChanges();
                     transaction.Commit();

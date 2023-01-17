@@ -12,7 +12,9 @@ namespace Labote.Core.Entities.Administrative
         public string Name { get; set; }
         public string LogoUrl { get; set; }
         public virtual ICollection<Company> Companies { get; set; }
-
+        public CompanyGroup CompanyGroup { get; set; }
+        public Guid? CompanyGroupId { get; set; }
+        public bool ShowMenu { get; set; }
         public virtual ICollection<CompanyPropertyKey> CompanyPropertyKeys { get; set; }
 
     }

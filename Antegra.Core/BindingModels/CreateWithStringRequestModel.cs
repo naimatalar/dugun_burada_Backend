@@ -10,5 +10,7 @@ namespace Labote.Core.BindingModels
     {
         public Guid? Id { get; set; }
         public string Name { get; set; }
+        public Guid? CompanyGroupId { get; set; }
+        public bool ShowMenu { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Labote.Core.Entities.Administrative;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Labote.Core.Entities
     public class CompanyGroup:BaseEntity
     {
         public string Name { get; set; }
-        public virtual ICollection<Company> Companies { get; set; }
+        public virtual ICollection<CompanyType> CompanyTypes { get; set; }
         public string ImageUrl { get; set; }
     }
 }

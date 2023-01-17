@@ -4,7 +4,7 @@ using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
 using Labote.Core.BindingModels;
 using Labote.Services;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -33,10 +33,29 @@ namespace Labote.Api.Controllers
             var data = _context.CompanyTypes.Where(x => !x.IsDelete)
                 .Select(x => new
                 {
+                    CompanyGroupName=x.CompanyGroup.Name,
                     x.Name,
                     CompanyCount = x.Companies.Count(),
                     x.Id,
+                    x.ShowMenu
                   
+                });
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+        [HttpGet("GetCompanyTypeTake6")]
+        [AllowAnonymous]
+        public async Task<BaseResponseModel> GetCompanyTypeTake6()
+        {
+            var data = _context.CompanyTypes.Where(x => !x.IsDelete)
+                .Select(x => new
+                {
+                    CompanyGroupName = x.CompanyGroup.Name,
+                    x.Name,
+                    x.LogoUrl,
+                    CompanyCount = x.Companies.Count(),
+                    x.Id,
+
                 });
             PageResponse.Data = data;
             return PageResponse;
@@ -46,7 +65,7 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Create(CreateWithStringRequestModel model)
         {
-            var data = new Core.Entities.Administrative.CompanyType { Name = model.Name };
+            var data = new Core.Entities.Administrative.CompanyType { Name = model.Name ,CompanyGroupId=model.CompanyGroupId,ShowMenu=model.ShowMenu };
             _context.CompanyTypes.Add(data);
           
             _context.SaveChanges(); 
@@ -62,6 +81,8 @@ namespace Labote.Api.Controllers
 
             var data = _context.CompanyTypes.FirstOrDefault(x => x.Id == model.Id);
             data.Name = model.Name;
+            data.CompanyGroupId = model.CompanyGroupId;
+            data.ShowMenu = model.ShowMenu;
             _context.Update(data);
             _context.SaveChanges();
             PageResponse.Data = data;

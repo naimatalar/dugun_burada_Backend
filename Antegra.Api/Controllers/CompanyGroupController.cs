@@ -80,7 +80,7 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Edit(CompanyGroupCreateModel model)
         {
-            var data=_context.CompanyGroups.Where(x => x.Id == model.Id).FirstOrDefault();
+            var data = _context.CompanyGroups.Where(x => x.Id == model.Id).FirstOrDefault();
             data.Name = model.Name;
             _context.Update(data);
             _context.SaveChanges();
@@ -105,20 +105,19 @@ namespace Labote.Api.Controllers
         {
             try
             {
- var data = _context.CompanyGroups.Include(x=>x.Companies).Where(x => x.IsActive && !x.IsDelete).Select(x => new
-            {
-                x.Name,
-                CompaniesLength=x.Companies.Count,
-                x.Id,
-            }).ToList();
-            PageResponse.Data = data;
+                var data = _context.CompanyGroups.Include(x => x.CompanyTypes).Where(x => x.IsActive && !x.IsDelete).Select(x => new
+                {
+                    x.Name,
+                    x.Id,
+                }).ToList();
+                PageResponse.Data = data;
             }
             catch (Exception e)
             {
 
                 throw;
             }
-           
+
             return PageResponse;
         }
 

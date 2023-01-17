@@ -13,6 +13,9 @@ namespace Labote.Core.BindingModels.request.company
         public Guid? Id { get; set; }
         public string Name { get; set; }
         public Guid CompanyTypeId { get; set; }
+        public int IlPlaka { get; set; }
+        public string Il { get; set; }
+        public string Ilce { get; set; }
 
     }
 
