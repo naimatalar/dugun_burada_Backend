@@ -30,19 +30,48 @@ namespace Labote.Api.Controllers
         public async Task<BaseResponseModel> getMenu()
         {
 
-           var dd= _context.CompanyGroups.Select(x => new {
-                CompanyTypes= x.CompanyTypes.Where(y=>y.ShowMenu==true).Select(z=>new { 
+            var dd = _context.CompanyGroups.Select(x => new
+            {
+                CompanyTypes = x.CompanyTypes.Where(y => y.ShowMenu == true).Select(z => new
+                {
                     z.Id,
-                  z.LogoUrl,
-                  z.Name,
+                    z.LogoUrl,
+                    z.Name,
+                    z.UrlName
                 }),
                 x.Name,
                 x.Id
             }).ToList();
-            var ddsa = _context.CompanyTypes.Where(y => y.ShowMenu == true).Select(x => new {x.Name,x.Id,x.LogoUrl});
-            
-             PageResponse.Data= new { groupMenu = dd.Where(x => x.CompanyTypes.Count() > 0) ,singleMenu=ddsa};
+            var ddsa = _context.CompanyTypes.Where(y => y.ShowMenu == true).Select(x => new { x.Name, x.Id, x.LogoUrl, x.UrlName });
+
+            PageResponse.Data = new { groupMenu = dd.Where(x => x.CompanyTypes.Count() > 0), singleMenu = ddsa };
             return PageResponse;
         }
+
+        [HttpGet("sctk")]
+        [AllowAnonymous]
+        public async Task<BaseResponseModel> getSearchMenu()
+        {
+
+            var dd = _context.CompanyGroups.Select(x => new
+            {
+                CompanyTypes = x.CompanyTypes.Select(z => new
+                {
+                    z.Id,
+                    z.LogoUrl,
+                    z.Name,
+                    z.UrlName
+                }),
+                x.Name,
+                x.Id,
+                x.UrlName
+            }).ToList();
+            var ddsa = _context.CompanyTypes.Select(x => new { x.Name, x.Id, x.LogoUrl, x.UrlName });
+
+            PageResponse.Data = new { groupMenu = dd.Where(x => x.CompanyTypes.Count() > 0), singleMenu = ddsa };
+            return PageResponse;
+        }
+
+
     }
 }

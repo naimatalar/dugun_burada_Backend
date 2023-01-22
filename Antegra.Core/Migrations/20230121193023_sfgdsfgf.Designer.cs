@@ -4,14 +4,16 @@ using Labote.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Labote.Core.Migrations
 {
     [DbContext(typeof(LaboteContext))]
-    partial class LaboteContextModelSnapshot : ModelSnapshot
+    [Migration("20230121193023_sfgdsfgf")]
+    partial class sfgdsfgf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,9 +132,6 @@ namespace Labote.Core.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -147,9 +146,6 @@ namespace Labote.Core.Migrations
 
                     b.Property<bool>("ShowMenu")
                         .HasColumnType("bit");
-
-                    b.Property<string>("UrlName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -345,9 +341,6 @@ namespace Labote.Core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UrlName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

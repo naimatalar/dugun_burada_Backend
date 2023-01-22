@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Labote.Api.Controllers
@@ -64,9 +65,13 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Create(CompanyGroupCreateModel model)
         {
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            var urlName = model.Name.Replace(" ", "-").TurkishCharReplace();
+            urlName = rgx.Replace(urlName, "").ToLower();
             var mdl = new Core.Entities.CompanyGroup
             {
-                Name = model.Name
+                Name = model.Name,
+                UrlName=urlName
             };
             _context.CompanyGroups.Add(mdl);
             _context.SaveChanges();
@@ -80,8 +85,12 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Edit(CompanyGroupCreateModel model)
         {
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            var urlName = model.Name.Replace(" ", "-").TurkishCharReplace();
+            urlName = rgx.Replace(urlName, "").ToLower();
             var data = _context.CompanyGroups.Where(x => x.Id == model.Id).FirstOrDefault();
             data.Name = model.Name;
+            data.UrlName = urlName;
             _context.Update(data);
             _context.SaveChanges();
             PageResponse.Data = data;

@@ -17,7 +17,7 @@ namespace Labote.Core.Entities
         public int IlPlaka { get; set; }
         public string Il { get; set; }
         public string Ilce { get; set; }
-
+        public string UrlName { get; set; }
         public virtual ICollection<CompanyUserLaboteUser> FirmUserLaboteUsers { get; set; }
         public virtual ICollection<CompanyTypePropertyValue> CompanyPropertyValues { get; set; }
         public virtual ICollection<PropertySelectListValue> PropertySelectListValues { get; set; }

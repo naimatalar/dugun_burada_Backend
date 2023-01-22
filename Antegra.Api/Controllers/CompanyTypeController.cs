@@ -3,6 +3,7 @@ using Labote.Api.BindingModel.RequestModel;
 using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
 using Labote.Core.BindingModels;
+using Labote.Core.Constants;
 using Labote.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static Labote.Core.Constants.Enums;
 
 namespace Labote.Api.Controllers
 {
@@ -27,18 +30,42 @@ namespace Labote.Api.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        [HttpGet("GetCompanyTypeDetailWeb/{name}")]
+        [AllowAnonymous]
+        public async Task<BaseResponseModel> GetCompanyTypeDetailWeb(string name)
+        {
+           
+            var data = _context.CompanyTypes.Where(x => x.Name == name).Select(x => new
+            {
+                x.LogoUrl,
+                x.Name,
+                Companies = x.Companies.Where(x => x.IlPlaka == 34).Select(y => new
+                {
+                    y.Name,
+                    y.IlPlaka,
+                    y.LogoUrl,
+                    y.Id,
+                    y.UrlName
+                })
+            });
+
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+
+
         [HttpGet("GetCompanyType")]
         public async Task<BaseResponseModel> GetProperyType()
         {
             var data = _context.CompanyTypes.Where(x => !x.IsDelete)
                 .Select(x => new
                 {
-                    CompanyGroupName=x.CompanyGroup.Name,
+                    CompanyGroupName = x.CompanyGroup.Name,
                     x.Name,
                     CompanyCount = x.Companies.Count(),
                     x.Id,
-                    x.ShowMenu
-                  
+                    x.ShowMenu,
+                    x.UrlName
                 });
             PageResponse.Data = data;
             return PageResponse;
@@ -55,7 +82,6 @@ namespace Labote.Api.Controllers
                     x.LogoUrl,
                     CompanyCount = x.Companies.Count(),
                     x.Id,
-
                 });
             PageResponse.Data = data;
             return PageResponse;
@@ -65,10 +91,18 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Create(CreateWithStringRequestModel model)
         {
-            var data = new Core.Entities.Administrative.CompanyType { Name = model.Name ,CompanyGroupId=model.CompanyGroupId,ShowMenu=model.ShowMenu };
+            var data = new Core.Entities.Administrative.CompanyType
+            {
+                Name = model.Name,
+                CompanyGroupId = model.CompanyGroupId,
+                ShowMenu = model.ShowMenu,
+                UrlName = model.UrlName,
+                Description = model.Description
+
+            };
             _context.CompanyTypes.Add(data);
-          
-            _context.SaveChanges(); 
+
+            _context.SaveChanges();
             PageResponse.Data = data;
             return PageResponse;
 
@@ -83,6 +117,8 @@ namespace Labote.Api.Controllers
             data.Name = model.Name;
             data.CompanyGroupId = model.CompanyGroupId;
             data.ShowMenu = model.ShowMenu;
+            data.UrlName = model.UrlName;
+            data.Description = model.Description;
             _context.Update(data);
             _context.SaveChanges();
             PageResponse.Data = data;

@@ -12,8 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Labote.Api.Controllers
 {
@@ -269,6 +272,9 @@ namespace Labote.Api.Controllers
         {
             var dd = IlIlceJson.GetIlIlce().Where(x=>x.plaka==model.IlPlaka).FirstOrDefault();
             var comp = new Company();
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            var urlName = model.Name.Replace(" ", "-").TurkishCharReplace();
+            urlName = rgx.Replace(urlName, "").ToLower();
             using (var context = new LaboteContext())
             {
                 using (var transaction = context.Database.BeginTransaction())
@@ -279,8 +285,8 @@ namespace Labote.Api.Controllers
                         CompanyTypeId = model.CompanyTypeId,
                         IlPlaka=model.IlPlaka,
                         Il=dd.il,
-                        Ilce=model.Ilce
-
+                        Ilce=model.Ilce,
+                        UrlName=urlName
                     };
                     context.Companies.Add(comp);
                     context.FirmUserLaboteUsers.Add(new Core.Entities.CompanyUserLaboteUser
@@ -301,8 +307,12 @@ namespace Labote.Api.Controllers
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> Edit(CompanyCreateRequestModel model)
         {
+         
             var dd = IlIlceJson.GetIlIlce().Where(x => x.plaka == model.IlPlaka).FirstOrDefault();
             var comp = new Company();
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            var urlName = model.Name.Replace(" ","-").TurkishCharReplace();
+            urlName = rgx.Replace(urlName, "").ToLower();
             using (var context = new LaboteContext())
             {
                 using (var transaction = context.Database.BeginTransaction())
@@ -313,7 +323,8 @@ namespace Labote.Api.Controllers
                     comp.CompanyTypeId = model.CompanyTypeId;
                     comp.IlPlaka = model.IlPlaka;
                     comp.Il = dd.il;
-                    comp.Ilce = model.Ilce;    
+                    comp.Ilce = model.Ilce;
+                    comp.UrlName = urlName;
                     context.Companies.Update(comp);
                     context.SaveChanges();
                     transaction.Commit();

@@ -12,5 +12,7 @@ namespace Labote.Core.Entities
         public string Name { get; set; }
         public virtual ICollection<CompanyType> CompanyTypes { get; set; }
         public string ImageUrl { get; set; }
+        public string UrlName { get; set; }
+
     }
 }
