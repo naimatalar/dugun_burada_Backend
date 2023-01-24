@@ -4,14 +4,16 @@ using Labote.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Labote.Core.Migrations
 {
     [DbContext(typeof(LaboteContext))]
-    partial class LaboteContextModelSnapshot : ModelSnapshot
+    [Migration("20230124133433_mmfsdsfgd")]
+    partial class mmfsdsfgd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -459,9 +461,6 @@ namespace Labote.Core.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -643,65 +642,6 @@ namespace Labote.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MenuModules");
-                });
-
-            modelBuilder.Entity("Labote.Core.Entities.SelectedCompany", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("SelectedCompanies");
-                });
-
-            modelBuilder.Entity("Labote.Core.Entities.SelectedCompanyTypeCompany", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("SelectedCompanyTypeCompanies");
                 });
 
             modelBuilder.Entity("Labote.Core.Entities.UserMenuModule", b =>
@@ -1090,28 +1030,6 @@ namespace Labote.Core.Migrations
                     b.Navigation("UserTopic");
                 });
 
-            modelBuilder.Entity("Labote.Core.Entities.SelectedCompany", b =>
-                {
-                    b.HasOne("Labote.Core.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("Labote.Core.Entities.SelectedCompanyTypeCompany", b =>
-                {
-                    b.HasOne("Labote.Core.Entities.Company", "Company")
-                        .WithMany("SelectedCompanyTypeCompanes")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-                });
-
             modelBuilder.Entity("Labote.Core.Entities.UserMenuModule", b =>
                 {
                     b.HasOne("Labote.Core.Entities.MenuModule", "MenuModel")
@@ -1227,8 +1145,6 @@ namespace Labote.Core.Migrations
                     b.Navigation("IndexCategoryCompanies");
 
                     b.Navigation("PropertySelectListValues");
-
-                    b.Navigation("SelectedCompanyTypeCompanes");
                 });
 
             modelBuilder.Entity("Labote.Core.Entities.CompanyGroup", b =>

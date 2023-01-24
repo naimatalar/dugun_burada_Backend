@@ -3,6 +3,7 @@ using Labote.Api.BindingModel.RequestModel;
 using Labote.Api.Controllers.LaboteController;
 using Labote.Core;
 using Labote.Core.BindingModels;
+using Labote.Core.BindingModels.request;
 using Labote.Core.Constants;
 using Labote.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +29,24 @@ namespace Labote.Api.Controllers
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
+        }
+
+        [HttpPost("getCompanyTypeByName")]
+
+        public async Task<BaseResponseModel> getCompanyTypeByName(GetByNameRequestModel model)
+        {
+
+            var data = _context.CompanyTypes.Where(x => x.Name.Contains(model.Name)).Select(x => new
+            {
+                x.Id,
+                x.Description,
+                x.Name,
+                x.UrlName,
+                
+            });
+            PageResponse.Data = data;
+            _context.SaveChanges();
+            return PageResponse;
         }
 
         [HttpGet("GetCompanyTypeDetailWeb/{name}")]

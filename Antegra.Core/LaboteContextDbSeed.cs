@@ -279,6 +279,27 @@ namespace Labote.Core
                     transaction.Commit();
                 }
             }
+            using (LaboteContext context = new LaboteContext())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    if (!MenuList.Any(x => x.PageName == "Anasayfa Dizayn"))
+                    {
+                        context.Add(new MenuModule
+                        {
+                            PageName = "Anasayfa Dizayn",
+                            PageUrl = "anasayfa-dizayn",
+                            ParentId = SuperAdmin.Id,
+                            OrderNumber = 2,
+                            IsSuperAdmin = true
+                        });
+                    }
+
+
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
             #endregion
 
 

@@ -44,6 +44,11 @@ namespace Labote.Core
         public DbSet<ContactUs> ContactUses { get; set; }
         public DbSet<CompanyImage> CompanyImages { get; set; }
         public DbSet<CompanyGroup> CompanyGroups { get; set; }
+        public DbSet<DiscountCompany> DiscountCompanies { get; set; }
+        public DbSet<IndexCategory> IndexCategories { get; set; }
+        public DbSet<SelectedCompany> SelectedCompanies { get; set; }
+        public DbSet<SelectedCompanyTypeCompany> SelectedCompanyTypeCompanies { get; set; }
+
 
 
 

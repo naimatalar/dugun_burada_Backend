@@ -25,6 +25,9 @@ namespace Labote.Core.Entities
         public virtual ICollection<AboutUs> AboutUses { get; set; }
         public virtual ICollection<ContactUs> ContactUses { get; set; }
         public virtual ICollection<CompanyImage> CompanyImages { get; set; }
+        public virtual ICollection<DiscountCompany> DiscountCompanies { get; set; }
+        public virtual ICollection<IndexCategoryCompany> IndexCategoryCompanies { get; set; }
+        public virtual ICollection<SelectedCompanyTypeCompany> SelectedCompanyTypeCompanes { get; set; }
 
 
     }

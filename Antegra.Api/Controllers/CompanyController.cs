@@ -47,6 +47,33 @@ namespace Labote.Api.Controllers
             PageResponse.Data = data;
             return PageResponse;
         }
+        [HttpPost("GetCompanyByName")]
+        public async Task<BaseResponseModel> GetCompanyByName(GetByNameRequestModel model)
+        {
+            var data = _context.Companies.Where(x => !x.IsDelete && x.IsActive && x.Name.Contains(model.Name))
+                .Select(x => new
+                {
+                    x.Name,
+                    x.Id,
+                    x.UrlName,
+                }).Take(8);
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+        [HttpPost("GetCompanyByNameAndCompanyType")]
+        public async Task<BaseResponseModel> GetCompanyByNameAndCompanyType(NameAndIdRequestModel model)
+        {
+            var data = _context.Companies.Where(x => !x.IsDelete && x.IsActive && x.Name.Contains(model.Name)&&x.CompanyTypeId==model.Id)
+                .Select(x => new
+                {
+                    x.Name,
+                    x.Id,
+                    x.UrlName,
+                }).Take(8);
+            PageResponse.Data = data;
+            return PageResponse;
+        }
+
         [HttpPost("SetProperty")]
         [PermissionCheck(Action = pageName)]
         public async Task<BaseResponseModel> SetProperty(PropertyValueSetRequestModel model)

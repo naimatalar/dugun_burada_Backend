@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Labote.Api.BindingModel.RequestModel
 {
-    public class GetByName:BasePaginationRequestModel
+    public class GetByNamePagination:BasePaginationRequestModel
     {
         public string Name { get; set; }
     }

@@ -18,6 +18,7 @@ namespace Labote.Core.Entities.Administrative
         public string UrlName { get; set; }
         public string Description { get; set; }
         public virtual ICollection<CompanyPropertyKey> CompanyPropertyKeys { get; set; }
+        public virtual ICollection<IndexCategory> IndexCategory { get; set; }
 
     }
 }
