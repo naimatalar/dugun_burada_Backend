@@ -11,6 +11,8 @@ using Labote.Api.BindingModel;
 using Labote.Core;
 using System.Linq;
 using Labote.Core.Entities.Administrative;
+using Labote.Core.Constants;
+using static Labote.Core.Constants.Enums;
 
 namespace Labote.Api.Controllers
 {
@@ -29,7 +31,6 @@ namespace Labote.Api.Controllers
         [AllowAnonymous]
         public async Task<BaseResponseModel> getMenu()
         {
-
             var dd = _context.CompanyGroups.Select(x => new
             {
                 CompanyTypes = x.CompanyTypes.Where(y => y.ShowMenu == true).Select(z => new
@@ -69,6 +70,54 @@ namespace Labote.Api.Controllers
             var ddsa = _context.CompanyTypes.Select(x => new { x.Name, x.Id, x.LogoUrl, x.UrlName });
 
             PageResponse.Data = new { groupMenu = dd.Where(x => x.CompanyTypes.Count() > 0), singleMenu = ddsa };
+            return PageResponse;
+        }
+        [HttpGet("rytm")]
+        [AllowAnonymous]
+        public async Task<BaseResponseModel> GetIndexPage()
+        {
+            var discount = _context.DiscountCompanies.Select(x => new
+            {
+                x.Id,
+                x.Company.Name,
+                x.Discount,
+                CompanyImagesCount=x.Company.CompanyImages.Count(),
+                x.Company.LogoUrl,
+                x.Company.UrlName,
+                x.Description,
+            }).Take(4).ToList();
+            var category = _context.IndexCategories.Select(x => new
+            {
+                x.Id,
+                x.CompanyType.Name,
+                CompaniesCount=x.CompanyType.Companies.Count(),
+                x.Description,
+                x.CompanyType.UrlName,
+                x.CompanyType.LogoUrl
+            }).Take(3).ToList();
+
+            var selectedCompanyTypeCompanies = _context.SelectedCompanyTypeCompanies.Select(x => new
+            {
+                x.Id,
+                x.Description,
+                CompanyName=x.Company.Name,
+                x.Company.UrlName,
+                CompanyPropertyValues = x.Company.CompanyPropertyValues.Select(y => new
+                {
+                    y.CompanyPropertyKey.Key,
+                    y.Value,
+                    CompanyPropertyKind=y.CompanyPropertyKey.CompanyPropertyKind.GetDisiplayDescription()
+                })
+            }).Take(4).ToList();
+            var selectedCompany = _context.SelectedCompanies.Select(x => new
+            {
+                x.Id,
+                x.Description,
+                CompanyName = x.Company.Name,
+                x.Company.UrlName
+            }).ToList();
+
+            PageResponse.Data = new {discount,category, selectedCompanyTypeCompanies,selectedCompany };
             return PageResponse;
         }
 

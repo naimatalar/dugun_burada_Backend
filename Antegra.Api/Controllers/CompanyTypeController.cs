@@ -36,7 +36,7 @@ namespace Labote.Api.Controllers
         public async Task<BaseResponseModel> getCompanyTypeByName(GetByNameRequestModel model)
         {
 
-            var data = _context.CompanyTypes.Where(x => x.Name.Contains(model.Name)).Select(x => new
+            var data = _context.CompanyTypes.Where(x => !x.IsDelete && x.IsActive && x.Name.Contains(model.Name)).Select(x => new
             {
                 x.Id,
                 x.Description,
@@ -54,7 +54,7 @@ namespace Labote.Api.Controllers
         public async Task<BaseResponseModel> GetCompanyTypeDetailWeb(string name)
         {
            
-            var data = _context.CompanyTypes.Where(x => x.Name == name).Select(x => new
+            var data = _context.CompanyTypes.Where(x => !x.IsDelete && x.IsActive && x.Name == name).Select(x => new
             {
                 x.LogoUrl,
                 x.Name,
