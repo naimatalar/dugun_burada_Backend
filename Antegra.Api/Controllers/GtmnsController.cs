@@ -114,7 +114,9 @@ namespace Labote.Api.Controllers
                 x.Id,
                 x.Description,
                 CompanyName = x.Company.Name,
-                x.Company.UrlName
+                x.Company.UrlName,
+                x.Company.LogoUrl,
+                CompanyTypeName=x.Company.CompanyType.Name
             }).ToList();
 
             PageResponse.Data = new {discount,category, selectedCompanyTypeCompanies,selectedCompany };
